@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Cycle — v5</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  :root{
+    --bg:#FBF5EF;--card:#FFF;--t1:#3A2A2A;--t2:#8C7A7A;--t3:#B8A5A5;
+    --m:#C4705A;--ml:#F2DDD6;
+    --f:#7EA87A;--fl:#DDE9DB;
+    --o:#D4A853;--ol:#F3E8CC;--ob:#E8B84D;--fe:#FFF5E0;
+    --l:#9B8EC4;--ll:#E3DDEF;
+    --sh:0 2px 16px rgba(58,42,42,.06);
+    --sh2:0 8px 32px rgba(58,42,42,.1);
+  }
+  body{font-family:'Inter',-apple-system,sans-serif;background:#E8E0D8;color:var(--t1);min-height:100vh;display:flex;justify-content:center;padding:20px}
+  .phone{width:390px;min-height:844px;background:var(--bg);border-radius:44px;overflow:hidden;position:relative;box-shadow:var(--sh2),0 0 0 1px rgba(58,42,42,.05)}
+  .sb{display:flex;justify-content:space-between;padding:16px 28px 8px;font-size:14px;font-weight:600}
+
+  .scr{display:none;padding:0 24px 110px;animation:fi .35s ease}
+  .scr.on{display:block}
+  @keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes su{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes sc{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:scale(1)}}
+  @keyframes pu{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.06);opacity:.2}}
+  @keyframes op{0%,100%{box-shadow:0 0 0 0 rgba(212,168,83,.4)}50%{box-shadow:0 0 0 6px rgba(212,168,83,0)}}
+
+  /* HOME */
+  .greet{font-size:15px;color:var(--t2);animation:fi .4s ease .05s both}
+  .dt{font-size:13px;color:var(--t3);margin-bottom:20px;animation:fi .4s ease .1s both}
+  .hero{background:var(--card);border-radius:24px;padding:26px 22px;box-shadow:var(--sh);text-align:center;margin-bottom:14px;animation:sc .5s ease .1s both;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;top:-30px;right:-30px;width:90px;height:90px;border-radius:50%;background:var(--ml);opacity:.5;animation:pu 4s ease-in-out infinite;pointer-events:none}
+  .hero h1{font-size:24px;font-weight:800;color:var(--m);margin-bottom:2px;position:relative;z-index:1}
+  .hero .hd{font-size:15px;color:var(--t2);margin-bottom:14px;position:relative;z-index:1}
+  .hero .hdiv{width:36px;height:2px;background:var(--ml);margin:0 auto 12px;border-radius:2px}
+  .hero .hp{font-size:13px;color:var(--t3);position:relative;z-index:1}
+  .hero .hp b{color:var(--l);font-weight:600}
+  .hero .ov{font-size:13px;color:var(--o);margin-top:6px;position:relative;z-index:1}
+  .hero .ov b{font-weight:700}
+
+  .tip{background:var(--card);border-radius:18px;padding:16px 18px;box-shadow:var(--sh);margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;animation:su .4s ease both}
+  .tip:nth-of-type(1){animation-delay:.25s}
+  .tip:nth-of-type(2){animation-delay:.35s}
+  .tip .te{font-size:20px;flex-shrink:0;margin-top:1px}
+  .tip .tt{font-size:14px;font-weight:500;line-height:1.4}
+  .tip .tsub{font-size:12px;color:var(--t2);margin-top:3px;line-height:1.35}
+
+  .qlog{width:100%;background:var(--card);border:2px dashed rgba(58,42,42,.08);border-radius:14px;padding:14px;font-size:13px;font-weight:500;color:var(--t2);font-family:inherit;cursor:pointer;transition:.2s;animation:su .4s ease .5s both;display:flex;align-items:center;justify-content:center;gap:6px}
+  .qlog:active{transform:scale(.97);background:var(--ml);border-color:var(--m);color:var(--m)}
+
+  /* CALENDAR */
+  .ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+  .cm{font-size:20px;font-weight:700}
+  .ca{display:flex;gap:8px}
+  .cab{width:34px;height:34px;border-radius:10px;background:var(--card);border:none;box-shadow:var(--sh);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--t2)}
+  .cab:active{transform:scale(.9)}
+  .cw{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px}
+  .cwd{text-align:center;font-size:11px;font-weight:500;color:var(--t3);padding:6px 0}
+  .cd{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+  .d{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:10px;font-size:13px;font-weight:500;color:var(--t1);position:relative;transition:.2s}
+  .d.e{pointer-events:none}
+  .d.td{font-weight:700}
+  .d.td::after{content:'';position:absolute;bottom:3px;width:4px;height:4px;border-radius:50%;background:var(--t1)}
+  .d.p{background:var(--ml);color:var(--m);font-weight:600}
+  .d.pp{border:1.5px dashed var(--m);color:var(--m);background:transparent}
+  .d.fe{background:var(--fe);color:var(--o)}
+  .d.ov{background:var(--ol);color:var(--ob);font-weight:700;animation:op 2.5s ease-in-out infinite}
+  .d.ov::before{content:'';position:absolute;top:3px;right:3px;width:4px;height:4px;border-radius:50%;background:var(--ob)}
+  .d.pf{background:var(--fl);color:var(--f)}
+  .d.pl{background:var(--ll);color:var(--l)}
+  .clg{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;padding:12px 14px;background:var(--card);border-radius:12px;box-shadow:var(--sh)}
+  .li{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--t2)}
+  .ld{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+  .ld.da{background:transparent;border:1.5px dashed var(--m)}
+  .ct{display:flex;align-items:center;justify-content:space-between;background:var(--card);border-radius:12px;padding:12px 16px;margin-top:10px;box-shadow:var(--sh);cursor:pointer}
+  .ctl{font-size:13px;font-weight:500;color:var(--t2)}
+
+  /* === NEW switch class === */
+  .tsw{width:44px;height:26px;background:var(--t3);border-radius:13px;position:relative;transition:background .3s;flex-shrink:0;pointer-events:none}
+  .tsw.on{background:var(--l)}
+  .tsw::after{content:'';position:absolute;width:20px;height:20px;background:#fff;border-radius:50%;top:3px;left:3px;transition:transform .3s cubic-bezier(.22,1,.36,1);box-shadow:0 1px 3px rgba(0,0,0,.15)}
+  .tsw.on::after{transform:translateX(18px)}
+
+  .clp{display:none;flex-wrap:wrap;gap:8px;margin-top:6px;padding:10px 14px;background:var(--card);border-radius:12px;box-shadow:var(--sh)}
+  .clp.v{display:flex}
+
+  /* MORE */
+  .mt{font-size:20px;font-weight:700;margin-bottom:16px}
+  .ms{margin-bottom:16px;animation:su .35s ease both}
+  .ms:nth-child(2){animation-delay:.05s}
+  .ms:nth-child(3){animation-delay:.1s}
+  .ms:nth-child(4){animation-delay:.15s}
+  .ms:nth-child(5){animation-delay:.2s}
+  .mst{font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;padding-left:2px}
+  .mc{background:var(--card);border-radius:14px;box-shadow:var(--sh);overflow:hidden}
+  .mi{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:.15s;border-bottom:1px solid rgba(58,42,42,.03)}
+  .mi:last-child{border:none}
+  .mi:active{background:rgba(58,42,42,.03)}
+  .mic{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+  .mit{flex:1}
+  .mit h3{font-size:14px;font-weight:600}
+  .mit p{font-size:11px;color:var(--t2);margin-top:1px}
+  .mia{color:var(--t3);font-size:13px}
+  .mb{font-size:9px;font-weight:700;padding:2px 6px;border-radius:6px;color:#fff;margin-right:6px}
+  .mb.n{background:var(--f)}
+  .mb.s{background:var(--t3)}
+
+  /* SUB */
+  .sub{display:none;padding:0 24px 110px;animation:fi .3s ease}
+  .sub.on{display:block}
+  .back{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:500;color:var(--t2);cursor:pointer;margin-bottom:16px;padding:4px 0}
+  .back:active{opacity:.6}
+  .subt{font-size:20px;font-weight:700;margin-bottom:16px}
+
+  .echeck{background:var(--card);border-radius:18px;padding:20px;box-shadow:var(--sh);margin-bottom:14px}
+  .echeck h3{font-size:15px;font-weight:600;margin-bottom:12px}
+  .slider-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  .slider-label{font-size:13px;color:var(--t2);width:70px}
+  .slider-track{flex:1;height:8px;background:var(--ll);border-radius:4px;position:relative;cursor:pointer}
+  .slider-fill{height:100%;background:var(--l);border-radius:4px;transition:.3s;pointer-events:none}
+  .slider-val{font-size:14px;font-weight:700;color:var(--l);width:24px;text-align:right}
+  .mood-row{display:flex;gap:8px}
+  .mood-btn{flex:1;padding:10px;border-radius:12px;border:2px solid transparent;background:var(--bg);text-align:center;cursor:pointer;transition:.2s;font-size:20px}
+  .mood-btn.sel{border-color:var(--m);background:var(--ml)}
+  .mood-btn span{display:block;font-size:10px;color:var(--t2);margin-top:2px}
+
+  .plan-card{background:var(--card);border-radius:18px;padding:18px;box-shadow:var(--sh);margin-bottom:10px}
+  .plan-card h3{font-size:15px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .plan-item{padding:12px 0;border-bottom:1px solid rgba(58,42,42,.04)}
+  .plan-item:last-child{border:none}
+  .plan-a{font-size:14px;font-weight:500}
+  .plan-b{font-size:13px;color:var(--f);font-weight:500;display:none;margin-top:4px}
+  .plan-b.v{display:block}
+  .plan-a.h{display:none}
+  .plan-toggle{font-size:12px;color:var(--l);font-weight:600;cursor:pointer;margin-top:4px;display:inline-block}
+  .plan-toggle:active{opacity:.6}
+  .plan-note{font-size:12px;color:var(--t2);background:var(--ll);padding:10px 14px;border-radius:10px;margin-top:12px;line-height:1.4}
+
+  .sport-tip{background:var(--card);border-radius:18px;padding:20px;box-shadow:var(--sh);margin-bottom:14px;border-left:3px solid var(--f)}
+  .sport-tip h3{font-size:15px;font-weight:600;margin-bottom:6px}
+  .sport-tip p{font-size:13px;color:var(--t2);line-height:1.4}
+  .sport-log{background:var(--card);border-radius:18px;padding:20px;box-shadow:var(--sh);margin-bottom:14px}
+  .sport-log h3{font-size:15px;font-weight:600;margin-bottom:12px}
+  .sport-types{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .sport-type{padding:8px 14px;border-radius:10px;background:var(--bg);font-size:13px;font-weight:500;cursor:pointer;transition:.2s;border:2px solid transparent}
+  .sport-type.sel{border-color:var(--f);background:var(--fl)}
+  .sport-input{width:100%;padding:12px;border-radius:10px;border:1.5px solid rgba(58,42,42,.1);font-size:14px;font-family:inherit;background:var(--bg);margin-bottom:8px}
+  .sport-input:focus{outline:none;border-color:var(--f)}
+  .sport-btn{width:100%;padding:14px;border:none;border-radius:12px;background:var(--f);color:#fff;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer}
+  .sport-btn:active{transform:scale(.97)}
+
+  .doc-tabs{display:flex;gap:6px;margin-bottom:14px}
+  .doc-tab{flex:1;padding:10px;border-radius:10px;background:var(--card);box-shadow:var(--sh);text-align:center;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;color:var(--t2)}
+  .doc-tab.sel{background:var(--m);color:#fff}
+  .doc-tab:active{transform:scale(.96)}
+  .doc-panel{display:none}
+  .doc-panel.on{display:block}
+  .anal-item{background:var(--card);border-radius:14px;padding:14px 16px;box-shadow:var(--sh);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+  .anal-name{font-size:14px;font-weight:600}
+  .anal-val{font-size:13px;color:var(--t2)}
+  .anal-flag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:6px}
+  .anal-flag.low{background:#FDE8E8;color:#C44}
+  .anal-flag.ok{background:var(--fl);color:var(--f)}
+  .doc-pdf{width:100%;padding:16px;border:none;border-radius:14px;background:var(--m);color:#fff;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;margin-top:14px}
+  .doc-pdf:active{transform:scale(.97)}
+  .sos-card{background:#FDE8E8;border-radius:18px;padding:20px;margin-bottom:14px}
+  .sos-card h3{font-size:16px;font-weight:700;color:#C44;margin-bottom:10px}
+  .sos-card p{font-size:13px;line-height:1.5;color:var(--t1);margin-bottom:8px}
+  .sos-card .sos-warn{background:#fff;padding:12px;border-radius:10px;font-size:12px;color:#C44;font-weight:500;line-height:1.4}
+
+  .set-card{background:var(--card);border-radius:14px;box-shadow:var(--sh);overflow:hidden;margin-bottom:14px}
+  .set-item{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(58,42,42,.03);gap:12px}
+  .set-item:last-child{border:none}
+  .set-label{font-size:14px;font-weight:500}
+  .set-desc{font-size:11px;color:var(--t2);margin-top:2px}
+  .mini-toggle{width:40px;height:24px;background:var(--t3);border-radius:12px;position:relative;cursor:pointer;transition:background .3s;flex-shrink:0}
+  .mini-toggle.on{background:var(--f)}
+  .mini-toggle::after{content:'';position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:3px;left:3px;transition:transform .3s cubic-bezier(.22,1,.36,1);box-shadow:0 1px 3px rgba(0,0,0,.12);pointer-events:none}
+  .mini-toggle.on::after{transform:translateX(16px)}
+
+  .mo{display:none;position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(58,42,42,.3);backdrop-filter:blur(6px);z-index:50;justify-content:flex-end}
+  .mo.on{display:flex}
+  .ms2{width:100%;background:var(--bg);border-radius:24px 24px 0 0;padding:18px 24px 36px;animation:su .3s ease}
+  .mh{width:32px;height:4px;background:var(--t3);border-radius:4px;margin:0 auto 16px;opacity:.4}
+  .mo-t{font-size:17px;font-weight:700;margin-bottom:14px}
+  .mo-opts{display:flex;gap:8px;margin-bottom:16px}
+  .mo-o{flex:1;background:var(--card);border:2px solid transparent;border-radius:14px;padding:14px 6px;text-align:center;cursor:pointer;transition:.2s;box-shadow:var(--sh)}
+  .mo-o:active{transform:scale(.95)}
+  .mo-o.sel{border-color:var(--m);background:var(--ml)}
+  .mo-o .ico{font-size:26px;margin-bottom:4px}
+  .mo-o .lbl{font-size:11px;font-weight:500;color:var(--t2)}
+  .mo-btn{width:100%;padding:14px;border:none;border-radius:12px;background:var(--m);color:#fff;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer}
+  .mo-btn:active{transform:scale(.97)}
+
+  .nav{position:absolute;bottom:0;left:0;right:0;background:rgba(251,245,239,.92);backdrop-filter:blur(16px);display:flex;justify-content:space-around;padding:12px 0 32px;border-top:1px solid rgba(58,42,42,.04)}
+  .ni{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 16px;border:none;background:none;font-family:inherit}
+  .ni:active{transform:scale(.9)}
+  .ni .ic{font-size:20px}
+  .ni .lb{font-size:10px;font-weight:500;color:var(--t3);transition:.2s}
+  .ni.ac .lb{color:var(--t1);font-weight:600}
+
+  .sl{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--t1);color:var(--bg);padding:6px 16px;border-radius:16px;font-size:12px;font-weight:600;z-index:100;font-family:'Inter',sans-serif}
+  @media(max-width:430px){body{padding:0;background:var(--bg)}.phone{border-radius:0;width:100%;min-height:100vh;box-shadow:none}.sl{display:none}}
+</style>
+</head>
+<body>
+<div class="sl" id="sl">v5 · Главная</div>
+<div class="phone">
+<div class="sb"><span>9:41</span><span>📶 🔋</span></div>
+
+<!-- HOME -->
+<div class="scr on" id="s-home">
+  <div class="greet">Привет, Аня 👋</div>
+  <div class="dt">Среда, 21 мая</div>
+  <div class="hero">
+    <h1>Месячные через 3 дня</h1>
+    <div class="hd">~25 мая, воскресенье</div>
+    <div class="hdiv"></div>
+    <div class="hp">День 22 · <b>лютеиновая</b></div>
+    <div class="ov">Овуляция была <b>14 мая</b> · Следующая ~<b>11 июня</b></div>
+  </div>
+  <div class="tip"><div class="te">💊</div><div><div class="tt">Через 3 дня тебе капец. Запасайся таблетками.</div><div class="tsub">Сегодня ещё ок — сделай всё важное до пятницы.</div></div></div>
+  <div class="tip"><div class="te">🏃‍♀️</div><div><div class="tt">Сегодня лучше йога, чем кроссфит.</div><div class="tsub">Тело копит силы — не грузи его.</div></div></div>
+  <button class="qlog" onclick="openMo()">✏️ Отметить самочувствие</button>
+</div>
+
+<!-- CALENDAR -->
+<div class="scr" id="s-cal">
+  <div class="ch"><div class="cm">Май 2025</div><div class="ca"><button class="cab">‹</button><button class="cab">›</button></div></div>
+  <div class="cw"><div class="cwd">Пн</div><div class="cwd">Вт</div><div class="cwd">Ср</div><div class="cwd">Чт</div><div class="cwd">Пт</div><div class="cwd">Сб</div><div class="cwd">Вс</div></div>
+  <div class="cd" id="cd">
+    <div class="d e"></div><div class="d e"></div><div class="d e"></div>
+    <div class="d p">1</div><div class="d p">2</div><div class="d p">3</div><div class="d p">4</div>
+    <div class="d p">5</div><div class="d" data-ph="f">6</div><div class="d" data-ph="f">7</div><div class="d" data-ph="f">8</div><div class="d" data-ph="f">9</div><div class="d fe" data-ph="f">10</div><div class="d fe" data-ph="f">11</div>
+    <div class="d fe" data-ph="f">12</div><div class="d fe" data-ph="f">13</div><div class="d ov" data-ph="o">14</div><div class="d fe" data-ph="o">15</div><div class="d" data-ph="l">16</div><div class="d" data-ph="l">17</div><div class="d" data-ph="l">18</div>
+    <div class="d" data-ph="l">19</div><div class="d" data-ph="l">20</div><div class="d td" data-ph="l">21</div><div class="d" data-ph="l">22</div><div class="d" data-ph="l">23</div><div class="d" data-ph="l">24</div><div class="d pp">25</div>
+    <div class="d pp">26</div><div class="d pp">27</div><div class="d pp">28</div><div class="d pp">29</div><div class="d e"></div><div class="d e"></div><div class="d e"></div>
+  </div>
+  <div class="clg">
+    <div class="li"><div class="ld" style="background:var(--m)"></div>Месячные</div>
+    <div class="li"><div class="ld" style="background:var(--ob)"></div>Овуляция</div>
+    <div class="li"><div class="ld" style="background:var(--fe);border:1px solid var(--ol)"></div>Фертильное</div>
+    <div class="li"><div class="ld da"></div>Прогноз</div>
+  </div>
+  <div class="ct" onclick="togPh()"><span class="ctl">Показать все фазы</span><div class="tsw" id="phT"></div></div>
+  <div class="clp" id="phL">
+    <div class="li"><div class="ld" style="background:var(--f)"></div>Фолликулярная</div>
+    <div class="li"><div class="ld" style="background:var(--l)"></div>Лютеиновая</div>
+  </div>
+</div>
+
+<!-- MORE -->
+<div class="scr" id="s-more">
+  <div class="mt">Ещё</div>
+  <div class="ms"><div class="mst">Планер</div><div class="mc">
+    <div class="mi" onclick="goSub('planner')"><div class="mic" style="background:var(--ll)">📋</div><div class="mit"><h3>План дня + План Б</h3><p>Адаптация по самочувствию</p></div><span class="mb n">NEW</span><span class="mia">›</span></div>
+  </div></div>
+  <div class="ms"><div class="mst">Спорт</div><div class="mc">
+    <div class="mi" onclick="goSub('sport')"><div class="mic" style="background:var(--fl)">🏃‍♀️</div><div class="mit"><h3>Спорт-режим</h3><p>Тренировки и питание по фазам</p></div><span class="mia">›</span></div>
+  </div></div>
+  <div class="ms"><div class="mst">Врач</div><div class="mc">
+    <div class="mi" onclick="goSub('doctor')"><div class="mic" style="background:var(--ml)">🩺</div><div class="mit"><h3>Анализы и отчёт</h3><p>Таймлайн, PDF для врача</p></div><span class="mia">›</span></div>
+    <div class="mi" onclick="goSub('sos')"><div class="mic" style="background:#FDE8E8">🔴</div><div class="mit"><h3>SOS — мне плохо</h3><p>Что делать прямо сейчас</p></div><span class="mia">›</span></div>
+  </div></div>
+  <div class="ms"><div class="mst">Настройки</div><div class="mc">
+    <div class="mi" onclick="goSub('settings')"><div class="mic" style="background:var(--ll)">⚙️</div><div class="mit"><h3>Модули и приватность</h3><p>Вкл/выкл, данные, экспорт</p></div><span class="mia">›</span></div>
+  </div></div>
+</div>
+
+<!-- SUB: PLANNER -->
+<div class="sub" id="s-planner">
+  <div class="back" onclick="backMore()">← Назад</div>
+  <div class="subt">План на сегодня</div>
+  <div class="echeck">
+    <h3>☀️ Утро-чек</h3>
+    <div class="slider-row">
+      <div class="slider-label">Энергия</div>
+      <div class="slider-track" onclick="slideE(event)"><div class="slider-fill" id="eFill" style="width:60%"></div></div>
+      <div class="slider-val" id="eVal">3</div>
+    </div>
+    <div class="slider-row">
+      <div class="slider-label">Боль</div>
+      <div class="slider-track" onclick="slideP(event)"><div class="slider-fill" id="pFill" style="width:20%;background:var(--m)"></div></div>
+      <div class="slider-val" id="pVal">1</div>
+    </div>
+    <div style="font-size:13px;color:var(--t2);margin-bottom:8px">Настроение</div>
+    <div class="mood-row">
+      <div class="mood-btn" onclick="selMood(this)">😊<span>Ок</span></div>
+      <div class="mood-btn sel" onclick="selMood(this)">😐<span>Норм</span></div>
+      <div class="mood-btn" onclick="selMood(this)">😩<span>Не ок</span></div>
+    </div>
+  </div>
+  <div class="plan-card">
+    <h3>📋 Задачи <span style="font-size:11px;color:var(--t3);font-weight:400">· день 22, лютеиновая</span></h3>
+    <div class="plan-item">
+      <div class="plan-a" id="pa1">🏋️ Силовая тренировка 45 мин</div>
+      <div class="plan-b" id="pb1">🧘 Растяжка / йога 15 мин</div>
+      <div class="plan-toggle" onclick="togPlan(1)">→ План Б (лёгкий)</div>
+    </div>
+    <div class="plan-item">
+      <div class="plan-a" id="pa2">💼 Презентация + 3 созвона</div>
+      <div class="plan-b" id="pb2">💌 Только срочные письма</div>
+      <div class="plan-toggle" onclick="togPlan(2)">→ План Б (лёгкий)</div>
+    </div>
+    <div class="plan-item">
+      <div class="plan-a" id="pa3">🍳 Готовка + уборка</div>
+      <div class="plan-b" id="pb3">🛋️ Заказать еду, отдохнуть</div>
+      <div class="plan-toggle" onclick="togPlan(3)">→ План Б (лёгкий)</div>
+    </div>
+    <div class="plan-note">💬 Энергия 3/5 + день 22 = тело просит полегче. План Б — не слабость, а забота. Несделанное перенесётся на завтра.</div>
+  </div>
+</div>
+
+<!-- SUB: SPORT -->
+<div class="sub" id="s-sport">
+  <div class="back" onclick="backMore()">← Назад</div>
+  <div class="subt">Спорт-режим</div>
+  <div class="sport-tip">
+    <h3>🏃‍♀️ Сегодня: лёгкая нагрузка</h3>
+    <p>День 22, лютеиновая фаза. Тело копит силы перед месячными. Лучше: йога, ходьба, плавание. Хуже: HIIT, тяжёлые веса.</p>
+  </div>
+  <div class="sport-log">
+    <h3>📝 Записать тренировку</h3>
+    <div class="sport-types">
+      <div class="sport-type sel" onclick="selST(this)">🧘 Йога</div>
+      <div class="sport-type" onclick="selST(this)">🏃 Бег</div>
+      <div class="sport-type" onclick="selST(this)">🏋️ Зал</div>
+      <div class="sport-type" onclick="selST(this)">🚶 Ходьба</div>
+      <div class="sport-type" onclick="selST(this)">🏊 Плавание</div>
+    </div>
+    <input class="sport-input" placeholder="Длительность (мин)" type="number">
+    <input class="sport-input" placeholder="Как себя чувствовала? (1-5)" type="number">
+    <button class="sport-btn" onclick="this.textContent='Записано ✓'">Сохранить</button>
+  </div>
+  <div class="sport-tip" style="border-color:var(--o)">
+    <h3>🍽️ Питание сегодня</h3>
+    <p>Лютеиновая фаза — тяга к сладкому нормальна. Добавь магний (бананы, тёмный шоколад) и железо (шпинат, красное мясо).</p>
+  </div>
+</div>
+
+<!-- SUB: DOCTOR -->
+<div class="sub" id="s-doctor">
+  <div class="back" onclick="backMore()">← Назад</div>
+  <div class="subt">Врач</div>
+  <div class="doc-tabs">
+    <div class="doc-tab sel" onclick="docTab(0)">Анализы</div>
+    <div class="doc-tab" onclick="docTab(1)">Отчёт</div>
+    <div class="doc-tab" onclick="docTab(2)">Вопросы</div>
+  </div>
+  <div class="doc-panel on" id="dp0">
+    <div class="anal-item"><div><div class="anal-name">Ферритин</div><div class="anal-val">18 нг/мл · 15 мая</div></div><span class="anal-flag low">↓ Низкий</span></div>
+    <div class="anal-item"><div><div class="anal-name">ТТГ</div><div class="anal-val">2.1 мМЕ/л · 15 мая</div></div><span class="anal-flag ok">✓ Норма</span></div>
+    <div class="anal-item"><div><div class="anal-name">Витамин D</div><div class="anal-val">22 нг/мл · 10 мар</div></div><span class="anal-flag low">↓ Низкий</span></div>
+    <div class="anal-item"><div><div class="anal-name">Гемоглобин</div><div class="anal-val">128 г/л · 15 мая</div></div><span class="anal-flag ok">✓ Норма</span></div>
+    <button class="sport-btn" style="background:var(--l);margin-top:12px" onclick="this.textContent='+ Добавлено'">+ Добавить анализ</button>
+  </div>
+  <div class="doc-panel" id="dp1">
+    <div class="plan-card">
+      <h3>📄 Отчёт для врача</h3>
+      <div style="font-size:13px;color:var(--t2);margin-bottom:12px">Период: последние 3 месяца</div>
+      <div style="font-size:13px;margin-bottom:6px">✅ Циклы и даты</div>
+      <div style="font-size:13px;margin-bottom:6px">✅ Симптомы</div>
+      <div style="font-size:13px;margin-bottom:6px">✅ Анализы с референсами</div>
+      <div style="font-size:13px;margin-bottom:6px">✅ Вопросы врачу</div>
+      <button class="doc-pdf" onclick="this.textContent='PDF сгенерирован ✓'">Сгенерировать PDF</button>
+      <div style="font-size:11px;color:var(--t3);text-align:center;margin-top:8px">⚠️ Не является медицинским заключением</div>
+    </div>
+  </div>
+  <div class="doc-panel" id="dp2">
+    <div class="plan-card">
+      <h3>❓ Мои вопросы врачу</h3>
+      <div style="font-size:14px;padding:8px 0;border-bottom:1px solid rgba(58,42,42,.04)">• Почему ферритин низкий при нормальном гемоглобине?</div>
+      <div style="font-size:14px;padding:8px 0;border-bottom:1px solid rgba(58,42,42,.04)">• Нужен ли приём железа?</div>
+      <div style="font-size:14px;padding:8px 0">• Сильная боль в дни 1-2 — это норма?</div>
+      <button class="sport-btn" style="background:var(--l);margin-top:12px" onclick="this.textContent='+ Добавлено'">+ Добавить вопрос</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUB: SOS -->
+<div class="sub" id="s-sos">
+  <div class="back" onclick="backMore()">← Назад</div>
+  <div class="subt">🔴 Мне сейчас плохо</div>
+  <div class="sos-card">
+    <h3>Что помогает прямо сейчас</h3>
+    <p>💊 <b>Обезболивающее:</b> Ибупрофен 400 мг или Но-шпа 2 таблетки</p>
+    <p>🧘 <b>Поза:</b> Лечь на бок, колени к груди. Грелка на низ живота.</p>
+    <p>🍵 <b>Напиток:</b> Тёплый чай с мятой или имбирём.</p>
+    <div class="sos-warn">🚨 <b>Вызывай скорую, если:</b><br>• Кровотечение > 2 прокладок в час<br>• Температура > 38.5<br>• Потеря сознания или сильное головокружение<br>• Боль не снимается обезболивающим</div>
+  </div>
+  <div style="font-size:11px;color:var(--t3);text-align:center">⚠️ Это не медицинская консультация</div>
+</div>
+
+<!-- SUB: SETTINGS -->
+<div class="sub" id="s-settings">
+  <div class="back" onclick="backMore()">← Назад</div>
+  <div class="subt">Настройки</div>
+  <div class="set-card">
+    <div class="set-item"><div><div class="set-label">📋 Планер</div><div class="set-desc">План дня + План Б</div></div><div class="mini-toggle on" onclick="this.classList.toggle('on')"></div></div>
+    <div class="set-item"><div><div class="set-label">🏃‍♀️ Спорт-режим</div><div class="set-desc">Тренировки + питание</div></div><div class="mini-toggle" onclick="this.classList.toggle('on')"></div></div>
+    <div class="set-item"><div><div class="set-label">🩺 Анализы</div><div class="set-desc">Таймлайн + отчёт врачу</div></div><div class="mini-toggle on" onclick="this.classList.toggle('on')"></div></div>
+    <div class="set-item"><div><div class="set-label">📝 Дневник симптомов</div><div class="set-desc">Боль, акне, сон</div></div><div class="mini-toggle" onclick="this.classList.toggle('on')"></div></div>
+    <div class="set-item"><div><div class="set-label">🌡️ Температура</div><div class="set-desc">Базальная температура</div></div><div class="mini-toggle" onclick="this.classList.toggle('on')"></div></div>
+  </div>
+  <div class="set-card">
+    <div class="set-item"><div><div class="set-label">🔒 Данные на устройстве</div><div class="set-desc">Локально, без облака</div></div><div style="font-size:12px;color:var(--f);font-weight:600">✓ Вкл</div></div>
+    <div class="set-item"><div><div class="set-label">🔔 Уведомления</div><div class="set-desc">Выключены по умолчанию</div></div><div class="mini-toggle" onclick="this.classList.toggle('on')"></div></div>
+    <div class="set-item"><div><div class="set-label">📤 Экспорт данных</div><div class="set-desc">CSV / PDF / JSON</div></div><span class="mia">›</span></div>
+    <div class="set-item"><div><div class="set-label">🗑️ Удалить все данные</div><div class="set-desc">Мгновенно, без вопросов</div></div><span class="mia" style="color:var(--m)">›</span></div>
+  </div>
+</div>
+
+<div class="mo" id="mo" onclick="closeMo(event)">
+  <div class="ms2" onclick="event.stopPropagation()">
+    <div class="mh"></div>
+    <div class="mo-t">Как ты сегодня?</div>
+    <div class="mo-opts">
+      <div class="mo-o" onclick="selMo(this)"><div class="ico">😊</div><div class="lbl">Супер</div></div>
+      <div class="mo-o" onclick="selMo(this)"><div class="ico">😐</div><div class="lbl">Норм</div></div>
+      <div class="mo-o" onclick="selMo(this)"><div class="ico">😩</div><div class="lbl">Не ок</div></div>
+    </div>
+    <button class="mo-btn" onclick="this.textContent='Готово ✓';setTimeout(()=>document.getElementById('mo').classList.remove('on'),700)">Сохранить</button>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="ni ac" onclick="go('home',this)"><span class="ic">🏠</span><span class="lb">Главная</span></button>
+  <button class="ni" onclick="go('cal',this)"><span class="ic">📅</span><span class="lb">Календарь</span></button>
+  <button class="ni" onclick="go('more',this)"><span class="ic">⚙️</span><span class="lb">Ещё</span></button>
+</div>
+</div>
+
+<script>
+const lb={home:'v5 · Главная',cal:'v5 · Календарь',more:'v5 · Ещё',planner:'v5 · Планер',sport:'v5 · Спорт',doctor:'v5 · Врач',sos:'v5 · SOS',settings:'v5 · Настройки'};
+
+function go(id,btn){
+  document.querySelectorAll('.scr,.sub').forEach(s=>s.classList.remove('on'));
+  document.getElementById('s-'+id).classList.add('on');
+  if(btn){document.querySelectorAll('.ni').forEach(n=>n.classList.remove('ac'));btn.classList.add('ac')}
+  document.getElementById('sl').textContent=lb[id];
+}
+function goSub(id){
+  document.querySelectorAll('.scr,.sub').forEach(s=>s.classList.remove('on'));
+  document.getElementById('s-'+id).classList.add('on');
+  document.getElementById('sl').textContent=lb[id];
+}
+function backMore(){
+  document.querySelectorAll('.scr,.sub').forEach(s=>s.classList.remove('on'));
+  document.getElementById('s-more').classList.add('on');
+  document.getElementById('sl').textContent=lb.more;
+}
+
+let phOn=false;
+function togPh(){
+  phOn=!phOn;
+  document.getElementById('phT').classList.toggle('on',phOn);
+  document.getElementById('phL').classList.toggle('v',phOn);
+  document.querySelectorAll('.d[data-ph]').forEach(d=>{
+    d.classList.remove('pf','pl');
+    if(phOn&&!d.classList.contains('fe')&&!d.classList.contains('ov')){
+      if(d.dataset.ph==='f')d.classList.add('pf');
+      if(d.dataset.ph==='l')d.classList.add('pl');
+    }
+  });
+}
+function slideE(e){
+  const r=e.currentTarget.getBoundingClientRect();
+  const pct=Math.round(((e.clientX-r.left)/r.width)*5);
+  const v=Math.max(1,Math.min(5,pct));
+  document.getElementById('eFill').style.width=(v*20)+'%';
+  document.getElementById('eVal').textContent=v;
+}
+function slideP(e){
+  const r=e.currentTarget.getBoundingClientRect();
+  const pct=Math.round(((e.clientX-r.left)/r.width)*5);
+  const v=Math.max(0,Math.min(5,pct));
+  document.getElementById('pFill').style.width=(v*20)+'%';
+  document.getElementById('pVal').textContent=v;
+}
+function selMood(el){document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('sel'));el.classList.add('sel')}
+const planState={1:false,2:false,3:false};
+function togPlan(n){
+  planState[n]=!planState[n];
+  document.getElementById('pa'+n).classList.toggle('h',planState[n]);
+  document.getElementById('pb'+n).classList.toggle('v',planState[n]);
+}
+function selST(el){document.querySelectorAll('.sport-type').forEach(t=>t.classList.remove('sel'));el.classList.add('sel')}
+function docTab(n){
+  document.querySelectorAll('.doc-tab').forEach((t,i)=>t.classList.toggle('sel',i===n));
+  document.querySelectorAll('.doc-panel').forEach((p,i)=>p.classList.toggle('on',i===n));
+}
+function openMo(){document.getElementById('mo').classList.add('on')}
+function closeMo(e){if(e.target===e.currentTarget)document.getElementById('mo').classList.remove('on')}
+function selMo(el){document.querySelectorAll('.mo-o').forEach(o=>o.classList.remove('sel'));el.classList.add('sel')}
+</script>
+</body>
+</html>
