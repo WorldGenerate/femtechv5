@@ -2,499 +2,767 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Cycle — v5</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Cycle</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  :root{
-    --bg:#FBF5EF;--card:#FFF;--t1:#3A2A2A;--t2:#8C7A7A;--t3:#B8A5A5;
-    --m:#C4705A;--ml:#F2DDD6;
-    --f:#7EA87A;--fl:#DDE9DB;
-    --o:#D4A853;--ol:#F3E8CC;--ob:#E8B84D;--fe:#FFF5E0;
-    --l:#9B8EC4;--ll:#E3DDEF;
-    --sh:0 2px 16px rgba(58,42,42,.06);
-    --sh2:0 8px 32px rgba(58,42,42,.1);
-  }
-  body{font-family:'Inter',-apple-system,sans-serif;background:#E8E0D8;color:var(--t1);min-height:100vh;display:flex;justify-content:center;padding:20px}
-  .phone{width:390px;min-height:844px;background:var(--bg);border-radius:44px;overflow:hidden;position:relative;box-shadow:var(--sh2),0 0 0 1px rgba(58,42,42,.05)}
-  .sb{display:flex;justify-content:space-between;padding:16px 28px 8px;font-size:14px;font-weight:600}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+--bg:#FBF5EF;--card:#FFF;--r:16px;--rs:10px;
+--t1:#3A2A2A;--t2:#8C7A7A;--t3:#B8A5A5;
+--m:#C4705A;--ml:#F2DDD6;
+--f:#7EA87A;--fl:#DDE9DB;
+--o:#D4A853;--ol:#F3E8CC;--ob:#E8B84D;--fe:#FFF5E0;
+--l:#9B8EC4;--ll:#E3DDEF;
+--acc:#C4705A;--green:#7EA87A;--blue:#6A9BC3;
+}
+body{font-family:'Inter',-apple-system,system-ui,sans-serif;background:var(--bg);color:var(--t1);max-width:430px;margin:0 auto;min-height:100vh;overflow-x:hidden;padding-bottom:80px}
+h1{font-size:22px;font-weight:700}
+h2{font-size:17px;font-weight:600}
+h3{font-size:14px;font-weight:600}
+.sm{font-size:12px;color:var(--t2)}
+.xs{font-size:11px;color:var(--t3)}
+.card{background:var(--card);border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
 
-  .scr{display:none;padding:0 24px 110px;animation:fi .35s ease}
-  .scr.on{display:block}
-  @keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-  @keyframes su{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-  @keyframes sc{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:scale(1)}}
-  @keyframes pu{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.06);opacity:.2}}
-  @keyframes op{0%,100%{box-shadow:0 0 0 0 rgba(212,168,83,.4)}50%{box-shadow:0 0 0 6px rgba(212,168,83,0)}}
+/* ONBOARDING */
+.onboard{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;transition:opacity .3s}
+.onboard.hidden{opacity:0;pointer-events:none}
+.onboard h1{text-align:center;margin-bottom:8px}
+.onboard p{text-align:center;color:var(--t2);margin-bottom:32px;font-size:14px;line-height:1.5}
+.onboard input[type=date],.onboard input[type=number]{width:100%;padding:14px;border:2px solid var(--t3);border-radius:var(--rs);font-size:16px;text-align:center;background:var(--card);color:var(--t1);margin-bottom:16px}
+.onboard input:focus{outline:none;border-color:var(--acc)}
+.ob-presets{display:flex;flex-direction:column;gap:10px;width:100%;margin-bottom:24px}
+.ob-preset{padding:14px 16px;border:2px solid #e8e0d8;border-radius:var(--rs);background:var(--card);cursor:pointer;transition:all .2s}
+.ob-preset.sel{border-color:var(--acc);background:var(--ml)}
+.ob-preset h3{margin-bottom:2px}
+.ob-preset .sm{color:var(--t2)}
+.ob-btn{width:100%;padding:16px;background:var(--acc);color:#fff;border:none;border-radius:var(--rs);font-size:16px;font-weight:600;cursor:pointer;margin-top:8px}
+.ob-btn:active{opacity:.8}
+.ob-dots{display:flex;gap:8px;margin-bottom:32px}
+.ob-dot{width:8px;height:8px;border-radius:50%;background:var(--t3)}
+.ob-dot.active{background:var(--acc);width:24px;border-radius:4px}
+.ob-step{display:none;width:100%;max-width:320px}
+.ob-step.active{display:block}
 
-  /* HOME */
-  .greet{font-size:15px;color:var(--t2);animation:fi .4s ease .05s both}
-  .dt{font-size:13px;color:var(--t3);margin-bottom:20px;animation:fi .4s ease .1s both}
-  .hero{background:var(--card);border-radius:24px;padding:26px 22px;box-shadow:var(--sh);text-align:center;margin-bottom:14px;animation:sc .5s ease .1s both;position:relative;overflow:hidden}
-  .hero::before{content:'';position:absolute;top:-30px;right:-30px;width:90px;height:90px;border-radius:50%;background:var(--ml);opacity:.5;animation:pu 4s ease-in-out infinite;pointer-events:none}
-  .hero h1{font-size:24px;font-weight:800;color:var(--m);margin-bottom:2px;position:relative;z-index:1}
-  .hero .hd{font-size:15px;color:var(--t2);margin-bottom:14px;position:relative;z-index:1}
-  .hero .hdiv{width:36px;height:2px;background:var(--ml);margin:0 auto 12px;border-radius:2px}
-  .hero .hp{font-size:13px;color:var(--t3);position:relative;z-index:1}
-  .hero .hp b{color:var(--l);font-weight:600}
-  .hero .ov{font-size:13px;color:var(--o);margin-top:6px;position:relative;z-index:1}
-  .hero .ov b{font-weight:700}
+/* HEADER */
+.header{padding:16px 20px 8px;display:flex;align-items:center;justify-content:space-between}
+.header h1{font-size:20px}
+.header .sm{color:var(--t2)}
 
-  .tip{background:var(--card);border-radius:18px;padding:16px 18px;box-shadow:var(--sh);margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;animation:su .4s ease both}
-  .tip:nth-of-type(1){animation-delay:.25s}
-  .tip:nth-of-type(2){animation-delay:.35s}
-  .tip .te{font-size:20px;flex-shrink:0;margin-top:1px}
-  .tip .tt{font-size:14px;font-weight:500;line-height:1.4}
-  .tip .tsub{font-size:12px;color:var(--t2);margin-top:3px;line-height:1.35}
+/* TABS */
+.tab{display:none}
+.tab.active{display:block}
+.tab-content{padding:0 16px 16px}
 
-  .qlog{width:100%;background:var(--card);border:2px dashed rgba(58,42,42,.08);border-radius:14px;padding:14px;font-size:13px;font-weight:500;color:var(--t2);font-family:inherit;cursor:pointer;transition:.2s;animation:su .4s ease .5s both;display:flex;align-items:center;justify-content:center;gap:6px}
-  .qlog:active{transform:scale(.97);background:var(--ml);border-color:var(--m);color:var(--m)}
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--card);border-top:1px solid #f0e8e0;display:flex;z-index:100;padding:6px 0 env(safe-area-inset-bottom,8px)}
+.bnav button{flex:1;background:none;border:none;padding:8px 0 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--t3);font-size:10px;font-weight:500;transition:color .2s}
+.bnav button.active{color:var(--acc)}
+.bnav button .ico{font-size:22px}
 
-  /* CALENDAR */
-  .ch{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-  .cm{font-size:20px;font-weight:700}
-  .ca{display:flex;gap:8px}
-  .cab{width:34px;height:34px;border-radius:10px;background:var(--card);border:none;box-shadow:var(--sh);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--t2)}
-  .cab:active{transform:scale(.9)}
-  .cw{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px}
-  .cwd{text-align:center;font-size:11px;font-weight:500;color:var(--t3);padding:6px 0}
-  .cd{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
-  .d{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:10px;font-size:13px;font-weight:500;color:var(--t1);position:relative;transition:.2s}
-  .d.e{pointer-events:none}
-  .d.td{font-weight:700}
-  .d.td::after{content:'';position:absolute;bottom:3px;width:4px;height:4px;border-radius:50%;background:var(--t1)}
-  .d.p{background:var(--ml);color:var(--m);font-weight:600}
-  .d.pp{border:1.5px dashed var(--m);color:var(--m);background:transparent}
-  .d.fe{background:var(--fe);color:var(--o)}
-  .d.ov{background:var(--ol);color:var(--ob);font-weight:700;animation:op 2.5s ease-in-out infinite}
-  .d.ov::before{content:'';position:absolute;top:3px;right:3px;width:4px;height:4px;border-radius:50%;background:var(--ob)}
-  .d.pf{background:var(--fl);color:var(--f)}
-  .d.pl{background:var(--ll);color:var(--l)}
-  .clg{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;padding:12px 14px;background:var(--card);border-radius:12px;box-shadow:var(--sh)}
-  .li{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--t2)}
-  .ld{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-  .ld.da{background:transparent;border:1.5px dashed var(--m)}
-  .ct{display:flex;align-items:center;justify-content:space-between;background:var(--card);border-radius:12px;padding:12px 16px;margin-top:10px;box-shadow:var(--sh);cursor:pointer}
-  .ctl{font-size:13px;font-weight:500;color:var(--t2)}
+/* FAB */
+.fab{position:fixed;bottom:76px;right:calc(50% - 195px);width:52px;height:52px;border-radius:50%;background:var(--acc);color:#fff;border:none;font-size:28px;cursor:pointer;box-shadow:0 4px 12px rgba(196,112,90,.35);z-index:99;display:flex;align-items:center;justify-content:center;transition:transform .2s}
+.fab:active{transform:scale(.9)}
+.fab.open{transform:rotate(45deg)}
+.fab-menu{position:fixed;bottom:136px;right:calc(50% - 195px);background:var(--card);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:98;overflow:hidden;display:none;min-width:180px}
+.fab-menu.open{display:block}
+.fab-menu button{display:flex;align-items:center;gap:10px;width:100%;padding:12px 16px;background:none;border:none;font-size:14px;color:var(--t1);cursor:pointer;text-align:left}
+.fab-menu button:active{background:var(--bg)}
+.fab-menu button .ico{font-size:18px}
 
-  /* === NEW switch class === */
-  .tsw{width:44px;height:26px;background:var(--t3);border-radius:13px;position:relative;transition:background .3s;flex-shrink:0;pointer-events:none}
-  .tsw.on{background:var(--l)}
-  .tsw::after{content:'';position:absolute;width:20px;height:20px;background:#fff;border-radius:50%;top:3px;left:3px;transition:transform .3s cubic-bezier(.22,1,.36,1);box-shadow:0 1px 3px rgba(0,0,0,.15)}
-  .tsw.on::after{transform:translateX(18px)}
+/* HOME CARDS */
+.cycle-hero{text-align:center;padding:20px 0 12px}
+.cycle-hero .day{font-size:48px;font-weight:800;color:var(--acc)}
+.cycle-hero .phase{font-size:13px;color:var(--t2);margin-top:2px}
+.next-event{display:flex;gap:10px;margin-bottom:12px}
+.next-event .ne-card{flex:1;padding:12px;border-radius:var(--rs);text-align:center}
+.ne-card.period{background:var(--ml);color:var(--m)}
+.ne-card.ovul{background:var(--ol);color:var(--o)}
+.ne-card .ne-label{font-size:11px;font-weight:500;opacity:.8}
+.ne-card .ne-date{font-size:15px;font-weight:700;margin-top:2px}
+.tip-card{border-left:3px solid var(--acc);padding:12px 14px;background:var(--card);border-radius:0 var(--rs) var(--rs) 0;margin-bottom:12px}
+.tip-card .tip-emoji{font-size:16px;margin-right:4px}
+.tip-card p{font-size:13px;line-height:1.5;color:var(--t1)}
 
-  .clp{display:none;flex-wrap:wrap;gap:8px;margin-top:6px;padding:10px 14px;background:var(--card);border-radius:12px;box-shadow:var(--sh)}
-  .clp.v{display:flex}
+/* PRESET INDICATOR */
+.preset-bar{display:flex;gap:6px;padding:0 16px 8px;overflow-x:auto}
+.preset-chip{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;background:var(--card);color:var(--t2);border:1px solid #e8e0d8;cursor:pointer;white-space:nowrap;transition:all .2s}
+.preset-chip.active{background:var(--acc);color:#fff;border-color:var(--acc)}
 
-  /* MORE */
-  .mt{font-size:20px;font-weight:700;margin-bottom:16px}
-  .ms{margin-bottom:16px;animation:su .35s ease both}
-  .ms:nth-child(2){animation-delay:.05s}
-  .ms:nth-child(3){animation-delay:.1s}
-  .ms:nth-child(4){animation-delay:.15s}
-  .ms:nth-child(5){animation-delay:.2s}
-  .mst{font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;padding-left:2px}
-  .mc{background:var(--card);border-radius:14px;box-shadow:var(--sh);overflow:hidden}
-  .mi{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;transition:.15s;border-bottom:1px solid rgba(58,42,42,.03)}
-  .mi:last-child{border:none}
-  .mi:active{background:rgba(58,42,42,.03)}
-  .mic{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-  .mit{flex:1}
-  .mit h3{font-size:14px;font-weight:600}
-  .mit p{font-size:11px;color:var(--t2);margin-top:1px}
-  .mia{color:var(--t3);font-size:13px}
-  .mb{font-size:9px;font-weight:700;padding:2px 6px;border-radius:6px;color:#fff;margin-right:6px}
-  .mb.n{background:var(--f)}
-  .mb.s{background:var(--t3)}
+/* HOME PRESET SECTIONS */
+.home-section{display:none}
+.home-section.active{display:block}
 
-  /* SUB */
-  .sub{display:none;padding:0 24px 110px;animation:fi .3s ease}
-  .sub.on{display:block}
-  .back{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:500;color:var(--t2);cursor:pointer;margin-bottom:16px;padding:4px 0}
-  .back:active{opacity:.6}
-  .subt{font-size:20px;font-weight:700;margin-bottom:16px}
+/* MOOD PANEL */
+.mood-panel{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.mood-tag{padding:6px 12px;border-radius:20px;font-size:12px;background:var(--bg);color:var(--t2);border:1px solid #e8e0d8;cursor:pointer;transition:all .15s;user-select:none}
+.mood-tag.sel{background:var(--ll);color:var(--l);border-color:var(--l)}
 
-  .echeck{background:var(--card);border-radius:18px;padding:20px;box-shadow:var(--sh);margin-bottom:14px}
-  .echeck h3{font-size:15px;font-weight:600;margin-bottom:12px}
-  .slider-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-  .slider-label{font-size:13px;color:var(--t2);width:70px}
-  .slider-track{flex:1;height:8px;background:var(--ll);border-radius:4px;position:relative;cursor:pointer}
-  .slider-fill{height:100%;background:var(--l);border-radius:4px;transition:.3s;pointer-events:none}
-  .slider-val{font-size:14px;font-weight:700;color:var(--l);width:24px;text-align:right}
-  .mood-row{display:flex;gap:8px}
-  .mood-btn{flex:1;padding:10px;border-radius:12px;border:2px solid transparent;background:var(--bg);text-align:center;cursor:pointer;transition:.2s;font-size:20px}
-  .mood-btn.sel{border-color:var(--m);background:var(--ml)}
-  .mood-btn span{display:block;font-size:10px;color:var(--t2);margin-top:2px}
+/* ENERGY/BAR */
+.energy-bar{height:6px;border-radius:3px;background:#eee;margin-top:6px;overflow:hidden}
+.energy-fill{height:100%;border-radius:3px;transition:width .3s}
 
-  .plan-card{background:var(--card);border-radius:18px;padding:18px;box-shadow:var(--sh);margin-bottom:10px}
-  .plan-card h3{font-size:15px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-  .plan-item{padding:12px 0;border-bottom:1px solid rgba(58,42,42,.04)}
-  .plan-item:last-child{border:none}
-  .plan-a{font-size:14px;font-weight:500}
-  .plan-b{font-size:13px;color:var(--f);font-weight:500;display:none;margin-top:4px}
-  .plan-b.v{display:block}
-  .plan-a.h{display:none}
-  .plan-toggle{font-size:12px;color:var(--l);font-weight:600;cursor:pointer;margin-top:4px;display:inline-block}
-  .plan-toggle:active{opacity:.6}
-  .plan-note{font-size:12px;color:var(--t2);background:var(--ll);padding:10px 14px;border-radius:10px;margin-top:12px;line-height:1.4}
+/* PLAN */
+.plan-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f5f0eb}
+.plan-item:last-child{border:none}
+.plan-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--t3);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.plan-check.done{background:var(--green);border-color:var(--green);color:#fff;font-size:12px}
+.plan-text{font-size:13px;flex:1}
+.plan-text.done-text{text-decoration:line-through;color:var(--t3)}
+.plan-explain{font-size:11px;color:var(--l);margin-top:2px;font-style:italic}
 
-  .sport-tip{background:var(--card);border-radius:18px;padding:20px;box-shadow:var(--sh);margin-bottom:14px;border-left:3px solid var(--f)}
-  .sport-tip h3{font-size:15px;font-weight:600;margin-bottom:6px}
-  .sport-tip p{font-size:13px;color:var(--t2);line-height:1.4}
-  .sport-log{background:var(--card);border-radius:18px;padding:20px;box-shadow:var(--sh);margin-bottom:14px}
-  .sport-log h3{font-size:15px;font-weight:600;margin-bottom:12px}
-  .sport-types{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
-  .sport-type{padding:8px 14px;border-radius:10px;background:var(--bg);font-size:13px;font-weight:500;cursor:pointer;transition:.2s;border:2px solid transparent}
-  .sport-type.sel{border-color:var(--f);background:var(--fl)}
-  .sport-input{width:100%;padding:12px;border-radius:10px;border:1.5px solid rgba(58,42,42,.1);font-size:14px;font-family:inherit;background:var(--bg);margin-bottom:8px}
-  .sport-input:focus{outline:none;border-color:var(--f)}
-  .sport-btn{width:100%;padding:14px;border:none;border-radius:12px;background:var(--f);color:#fff;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer}
-  .sport-btn:active{transform:scale(.97)}
+/* CALENDAR */
+.cal-header{display:flex;align-items:center;justify-content:space-between;padding:8px 0}
+.cal-header h2{font-size:16px}
+.cal-nav{background:none;border:none;font-size:20px;cursor:pointer;color:var(--t2);padding:4px 8px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+.cal-dow{font-size:10px;color:var(--t3);padding:4px 0;font-weight:600}
+.cal-day{position:relative;padding:6px 2px;font-size:13px;border-radius:8px;cursor:pointer;min-height:36px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.cal-day:active{background:var(--bg)}
+.cal-day.today{font-weight:700;color:var(--acc)}
+.cal-day.period{background:var(--ml);color:var(--m);font-weight:600}
+.cal-day.ovul-day{background:var(--ol);color:var(--o);font-weight:700}
+.cal-day.fertile{background:var(--fe)}
+.cal-day.phase-f{background:var(--fl)}
+.cal-day.phase-l{background:var(--ll)}
+.cal-day .cal-dots{display:flex;gap:2px;margin-top:1px}
+.cal-day .cal-dot{width:4px;height:4px;border-radius:50%}
+.cal-dot.dot-period{background:var(--m)}
+.cal-dot.dot-ovul{background:var(--ob)}
+.cal-dot.dot-train{background:var(--green)}
+.cal-toggle{display:flex;align-items:center;gap:8px;padding:8px 0}
+.cal-toggle label{font-size:12px;color:var(--t2)}
+.tsw{position:relative;width:40px;height:22px;background:var(--t3);border-radius:11px;cursor:pointer;transition:background .2s;flex-shrink:0}
+.tsw.on{background:var(--acc)}
+.tsw::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;background:#fff;border-radius:50%;transition:transform .2s}
+.tsw.on::after{transform:translateX(18px)}
+.cal-legend{display:flex;flex-wrap:wrap;gap:10px;padding:8px 0}
+.cal-legend span{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--t2)}
+.cal-legend .ld{width:8px;height:8px;border-radius:50%}
 
-  .doc-tabs{display:flex;gap:6px;margin-bottom:14px}
-  .doc-tab{flex:1;padding:10px;border-radius:10px;background:var(--card);box-shadow:var(--sh);text-align:center;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;color:var(--t2)}
-  .doc-tab.sel{background:var(--m);color:#fff}
-  .doc-tab:active{transform:scale(.96)}
-  .doc-panel{display:none}
-  .doc-panel.on{display:block}
-  .anal-item{background:var(--card);border-radius:14px;padding:14px 16px;box-shadow:var(--sh);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
-  .anal-name{font-size:14px;font-weight:600}
-  .anal-val{font-size:13px;color:var(--t2)}
-  .anal-flag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:6px}
-  .anal-flag.low{background:#FDE8E8;color:#C44}
-  .anal-flag.ok{background:var(--fl);color:var(--f)}
-  .doc-pdf{width:100%;padding:16px;border:none;border-radius:14px;background:var(--m);color:#fff;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;margin-top:14px}
-  .doc-pdf:active{transform:scale(.97)}
-  .sos-card{background:#FDE8E8;border-radius:18px;padding:20px;margin-bottom:14px}
-  .sos-card h3{font-size:16px;font-weight:700;color:#C44;margin-bottom:10px}
-  .sos-card p{font-size:13px;line-height:1.5;color:var(--t1);margin-bottom:8px}
-  .sos-card .sos-warn{background:#fff;padding:12px;border-radius:10px;font-size:12px;color:#C44;font-weight:500;line-height:1.4}
+/* SUB SCREENS (Ещё) */
+.sub-nav{display:flex;gap:6px;padding:0 16px 12px;overflow-x:auto}
+.sub-chip{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;background:var(--card);color:var(--t2);border:1px solid #e8e0d8;cursor:pointer;white-space:nowrap}
+.sub-chip.active{background:var(--t1);color:#fff;border-color:var(--t1)}
+.sub-screen{display:none;padding:0 16px}
+.sub-screen.active{display:block}
 
-  .set-card{background:var(--card);border-radius:14px;box-shadow:var(--sh);overflow:hidden;margin-bottom:14px}
-  .set-item{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(58,42,42,.03);gap:12px}
-  .set-item:last-child{border:none}
-  .set-label{font-size:14px;font-weight:500}
-  .set-desc{font-size:11px;color:var(--t2);margin-top:2px}
-  .mini-toggle{width:40px;height:24px;background:var(--t3);border-radius:12px;position:relative;cursor:pointer;transition:background .3s;flex-shrink:0}
-  .mini-toggle.on{background:var(--f)}
-  .mini-toggle::after{content:'';position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:3px;left:3px;transition:transform .3s cubic-bezier(.22,1,.36,1);box-shadow:0 1px 3px rgba(0,0,0,.12);pointer-events:none}
-  .mini-toggle.on::after{transform:translateX(16px)}
+/* PLANER */
+.planer-tabs{display:flex;gap:0;margin-bottom:12px;background:var(--bg);border-radius:var(--rs);padding:3px}
+.planer-tab{flex:1;padding:8px;text-align:center;font-size:13px;font-weight:600;border-radius:8px;cursor:pointer;color:var(--t2);transition:all .2s}
+.planer-tab.active{background:var(--card);color:var(--t1);box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.slider-row{display:flex;align-items:center;gap:10px;padding:8px 0}
+.slider-row label{font-size:13px;width:80px;flex-shrink:0}
+.slider-row input[type=range]{flex:1;accent-color:var(--acc)}
+.slider-row .val{font-size:13px;font-weight:600;width:24px;text-align:right}
+.kcal-input{display:flex;align-items:center;gap:10px;padding:10px 0}
+.kcal-input label{font-size:13px}
+.kcal-input input{width:80px;padding:8px;border:1px solid #e8e0d8;border-radius:8px;font-size:14px;text-align:center}
 
-  .mo{display:none;position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(58,42,42,.3);backdrop-filter:blur(6px);z-index:50;justify-content:flex-end}
-  .mo.on{display:flex}
-  .ms2{width:100%;background:var(--bg);border-radius:24px 24px 0 0;padding:18px 24px 36px;animation:su .3s ease}
-  .mh{width:32px;height:4px;background:var(--t3);border-radius:4px;margin:0 auto 16px;opacity:.4}
-  .mo-t{font-size:17px;font-weight:700;margin-bottom:14px}
-  .mo-opts{display:flex;gap:8px;margin-bottom:16px}
-  .mo-o{flex:1;background:var(--card);border:2px solid transparent;border-radius:14px;padding:14px 6px;text-align:center;cursor:pointer;transition:.2s;box-shadow:var(--sh)}
-  .mo-o:active{transform:scale(.95)}
-  .mo-o.sel{border-color:var(--m);background:var(--ml)}
-  .mo-o .ico{font-size:26px;margin-bottom:4px}
-  .mo-o .lbl{font-size:11px;font-weight:500;color:var(--t2)}
-  .mo-btn{width:100%;padding:14px;border:none;border-radius:12px;background:var(--m);color:#fff;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer}
-  .mo-btn:active{transform:scale(.97)}
+/* SETTINGS */
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f5f0eb}
+.setting-row:last-child{border:none}
+.setting-label{font-size:14px}
+.setting-desc{font-size:11px;color:var(--t3)}
 
-  .nav{position:absolute;bottom:0;left:0;right:0;background:rgba(251,245,239,.92);backdrop-filter:blur(16px);display:flex;justify-content:space-around;padding:12px 0 32px;border-top:1px solid rgba(58,42,42,.04)}
-  .ni{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 16px;border:none;background:none;font-family:inherit}
-  .ni:active{transform:scale(.9)}
-  .ni .ic{font-size:20px}
-  .ni .lb{font-size:10px;font-weight:500;color:var(--t3);transition:.2s}
-  .ni.ac .lb{color:var(--t1);font-weight:600}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:200;display:none;align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--card);border-radius:var(--r) var(--r) 0 0;padding:20px;width:100%;max-width:430px;max-height:80vh;overflow-y:auto}
+.modal h2{margin-bottom:12px}
+.modal-close{float:right;background:none;border:none;font-size:20px;cursor:pointer;color:var(--t2)}
+.modal input,.modal select{width:100%;padding:12px;border:1px solid #e8e0d8;border-radius:8px;font-size:14px;margin-bottom:10px;background:var(--bg)}
+.modal .btn{width:100%;padding:14px;background:var(--acc);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:600;cursor:pointer;margin-top:8px}
 
-  .sl{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--t1);color:var(--bg);padding:6px 16px;border-radius:16px;font-size:12px;font-weight:600;z-index:100;font-family:'Inter',sans-serif}
-  @media(max-width:430px){body{padding:0;background:var(--bg)}.phone{border-radius:0;width:100%;min-height:100vh;box-shadow:none}.sl{display:none}}
+/* SOS */
+.sos-card{padding:16px;border-radius:var(--rs);margin-bottom:10px;cursor:pointer}
+.sos-card h3{margin-bottom:4px}
+.sos-card p{font-size:12px;color:var(--t2);line-height:1.4}
+
+/* MISC */
+.section-title{font-size:13px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;padding:12px 0 6px}
+.divider{height:1px;background:#f0e8e0;margin:8px 0}
+.empty{text-align:center;padding:24px;color:var(--t3);font-size:13px}
 </style>
 </head>
 <body>
-<div class="sl" id="sl">v5 · Главная</div>
-<div class="phone">
-<div class="sb"><span>9:41</span><span>📶 🔋</span></div>
 
-<!-- HOME -->
-<div class="scr on" id="s-home">
-  <div class="greet">Привет, Аня 👋</div>
-  <div class="dt">Среда, 21 мая</div>
-  <div class="hero">
-    <h1>Месячные через 3 дня</h1>
-    <div class="hd">~25 мая, воскресенье</div>
-    <div class="hdiv"></div>
-    <div class="hp">День 22 · <b>лютеиновая</b></div>
-    <div class="ov">Овуляция была <b>14 мая</b> · Следующая ~<b>11 июня</b></div>
+<!-- ONBOARDING -->
+<div class="onboard" id="onboard">
+  <div class="ob-dots">
+    <div class="ob-dot active" id="od1"></div>
+    <div class="ob-dot" id="od2"></div>
+    <div class="ob-dot" id="od3"></div>
   </div>
-  <div class="tip"><div class="te">💊</div><div><div class="tt">Через 3 дня тебе капец. Запасайся таблетками.</div><div class="tsub">Сегодня ещё ок — сделай всё важное до пятницы.</div></div></div>
-  <div class="tip"><div class="te">🏃‍♀️</div><div><div class="tt">Сегодня лучше йога, чем кроссфит.</div><div class="tsub">Тело копит силы — не грузи его.</div></div></div>
-  <button class="qlog" onclick="openMo()">✏️ Отметить самочувствие</button>
-</div>
 
-<!-- CALENDAR -->
-<div class="scr" id="s-cal">
-  <div class="ch"><div class="cm">Май 2025</div><div class="ca"><button class="cab">‹</button><button class="cab">›</button></div></div>
-  <div class="cw"><div class="cwd">Пн</div><div class="cwd">Вт</div><div class="cwd">Ср</div><div class="cwd">Чт</div><div class="cwd">Пт</div><div class="cwd">Сб</div><div class="cwd">Вс</div></div>
-  <div class="cd" id="cd">
-    <div class="d e"></div><div class="d e"></div><div class="d e"></div>
-    <div class="d p">1</div><div class="d p">2</div><div class="d p">3</div><div class="d p">4</div>
-    <div class="d p">5</div><div class="d" data-ph="f">6</div><div class="d" data-ph="f">7</div><div class="d" data-ph="f">8</div><div class="d" data-ph="f">9</div><div class="d fe" data-ph="f">10</div><div class="d fe" data-ph="f">11</div>
-    <div class="d fe" data-ph="f">12</div><div class="d fe" data-ph="f">13</div><div class="d ov" data-ph="o">14</div><div class="d fe" data-ph="o">15</div><div class="d" data-ph="l">16</div><div class="d" data-ph="l">17</div><div class="d" data-ph="l">18</div>
-    <div class="d" data-ph="l">19</div><div class="d" data-ph="l">20</div><div class="d td" data-ph="l">21</div><div class="d" data-ph="l">22</div><div class="d" data-ph="l">23</div><div class="d" data-ph="l">24</div><div class="d pp">25</div>
-    <div class="d pp">26</div><div class="d pp">27</div><div class="d pp">28</div><div class="d pp">29</div><div class="d e"></div><div class="d e"></div><div class="d e"></div>
+  <div class="ob-step active" id="os1">
+    <h1>Привет 👋</h1>
+    <p>Планировщик для девушек, у которых есть работа, спорт и цикл — а не беременность.</p>
+    <label class="sm" style="display:block;margin-bottom:6px">Когда были последние месячные?</label>
+    <input type="date" id="ob-date">
+    <button class="ob-btn" onclick="obNext(2)">Дальше</button>
   </div>
-  <div class="clg">
-    <div class="li"><div class="ld" style="background:var(--m)"></div>Месячные</div>
-    <div class="li"><div class="ld" style="background:var(--ob)"></div>Овуляция</div>
-    <div class="li"><div class="ld" style="background:var(--fe);border:1px solid var(--ol)"></div>Фертильное</div>
-    <div class="li"><div class="ld da"></div>Прогноз</div>
-  </div>
-  <div class="ct" onclick="togPh()"><span class="ctl">Показать все фазы</span><div class="tsw" id="phT"></div></div>
-  <div class="clp" id="phL">
-    <div class="li"><div class="ld" style="background:var(--f)"></div>Фолликулярная</div>
-    <div class="li"><div class="ld" style="background:var(--l)"></div>Лютеиновая</div>
-  </div>
-</div>
 
-<!-- MORE -->
-<div class="scr" id="s-more">
-  <div class="mt">Ещё</div>
-  <div class="ms"><div class="mst">Планер</div><div class="mc">
-    <div class="mi" onclick="goSub('planner')"><div class="mic" style="background:var(--ll)">📋</div><div class="mit"><h3>План дня + План Б</h3><p>Адаптация по самочувствию</p></div><span class="mb n">NEW</span><span class="mia">›</span></div>
-  </div></div>
-  <div class="ms"><div class="mst">Спорт</div><div class="mc">
-    <div class="mi" onclick="goSub('sport')"><div class="mic" style="background:var(--fl)">🏃‍♀️</div><div class="mit"><h3>Спорт-режим</h3><p>Тренировки и питание по фазам</p></div><span class="mia">›</span></div>
-  </div></div>
-  <div class="ms"><div class="mst">Врач</div><div class="mc">
-    <div class="mi" onclick="goSub('doctor')"><div class="mic" style="background:var(--ml)">🩺</div><div class="mit"><h3>Анализы и отчёт</h3><p>Таймлайн, PDF для врача</p></div><span class="mia">›</span></div>
-    <div class="mi" onclick="goSub('sos')"><div class="mic" style="background:#FDE8E8">🔴</div><div class="mit"><h3>SOS — мне плохо</h3><p>Что делать прямо сейчас</p></div><span class="mia">›</span></div>
-  </div></div>
-  <div class="ms"><div class="mst">Настройки</div><div class="mc">
-    <div class="mi" onclick="goSub('settings')"><div class="mic" style="background:var(--ll)">⚙️</div><div class="mit"><h3>Модули и приватность</h3><p>Вкл/выкл, данные, экспорт</p></div><span class="mia">›</span></div>
-  </div></div>
-</div>
-
-<!-- SUB: PLANNER -->
-<div class="sub" id="s-planner">
-  <div class="back" onclick="backMore()">← Назад</div>
-  <div class="subt">План на сегодня</div>
-  <div class="echeck">
-    <h3>☀️ Утро-чек</h3>
-    <div class="slider-row">
-      <div class="slider-label">Энергия</div>
-      <div class="slider-track" onclick="slideE(event)"><div class="slider-fill" id="eFill" style="width:60%"></div></div>
-      <div class="slider-val" id="eVal">3</div>
-    </div>
-    <div class="slider-row">
-      <div class="slider-label">Боль</div>
-      <div class="slider-track" onclick="slideP(event)"><div class="slider-fill" id="pFill" style="width:20%;background:var(--m)"></div></div>
-      <div class="slider-val" id="pVal">1</div>
-    </div>
-    <div style="font-size:13px;color:var(--t2);margin-bottom:8px">Настроение</div>
-    <div class="mood-row">
-      <div class="mood-btn" onclick="selMood(this)">😊<span>Ок</span></div>
-      <div class="mood-btn sel" onclick="selMood(this)">😐<span>Норм</span></div>
-      <div class="mood-btn" onclick="selMood(this)">😩<span>Не ок</span></div>
-    </div>
+  <div class="ob-step" id="os2">
+    <h1>Длина цикла</h1>
+    <p>Средняя длина от первого дня до первого дня следующего</p>
+    <input type="number" id="ob-len" value="28" min="20" max="45">
+    <div class="sm" style="text-align:center;margin-bottom:16px">Обычно 24–35 дней</div>
+    <button class="ob-btn" onclick="obNext(3)">Дальше</button>
   </div>
-  <div class="plan-card">
-    <h3>📋 Задачи <span style="font-size:11px;color:var(--t3);font-weight:400">· день 22, лютеиновая</span></h3>
-    <div class="plan-item">
-      <div class="plan-a" id="pa1">🏋️ Силовая тренировка 45 мин</div>
-      <div class="plan-b" id="pb1">🧘 Растяжка / йога 15 мин</div>
-      <div class="plan-toggle" onclick="togPlan(1)">→ План Б (лёгкий)</div>
+
+  <div class="ob-step" id="os3">
+    <h1>Что тебе важно?</h1>
+    <p>Выбери режим — потом можно поменять в настройках</p>
+    <div class="ob-presets">
+      <div class="ob-preset" onclick="selPreset(this,'min')" data-p="min">
+        <h3>🔮 Минимум</h3>
+        <div class="sm">Только прогноз месячных и овуляции. 30 секунд в день.</div>
+      </div>
+      <div class="ob-preset sel" onclick="selPreset(this,'plan')" data-p="plan">
+        <h3>📋 Планер</h3>
+        <div class="sm">План дня + энергия + настроение. 2-5 минут.</div>
+      </div>
+      <div class="ob-preset" onclick="selPreset(this,'sport')" data-p="sport">
+        <h3>🏋️ Спорт</h3>
+        <div class="sm">Тренировки + калории + план. Для активных.</div>
+      </div>
     </div>
-    <div class="plan-item">
-      <div class="plan-a" id="pa2">💼 Презентация + 3 созвона</div>
-      <div class="plan-b" id="pb2">💌 Только срочные письма</div>
-      <div class="plan-toggle" onclick="togPlan(2)">→ План Б (лёгкий)</div>
-    </div>
-    <div class="plan-item">
-      <div class="plan-a" id="pa3">🍳 Готовка + уборка</div>
-      <div class="plan-b" id="pb3">🛋️ Заказать еду, отдохнуть</div>
-      <div class="plan-toggle" onclick="togPlan(3)">→ План Б (лёгкий)</div>
-    </div>
-    <div class="plan-note">💬 Энергия 3/5 + день 22 = тело просит полегче. План Б — не слабость, а забота. Несделанное перенесётся на завтра.</div>
+    <button class="ob-btn" onclick="finishOnboard()">Готово!</button>
   </div>
 </div>
 
-<!-- SUB: SPORT -->
-<div class="sub" id="s-sport">
-  <div class="back" onclick="backMore()">← Назад</div>
-  <div class="subt">Спорт-режим</div>
-  <div class="sport-tip">
-    <h3>🏃‍♀️ Сегодня: лёгкая нагрузка</h3>
-    <p>День 22, лютеиновая фаза. Тело копит силы перед месячными. Лучше: йога, ходьба, плавание. Хуже: HIIT, тяжёлые веса.</p>
-  </div>
-  <div class="sport-log">
-    <h3>📝 Записать тренировку</h3>
-    <div class="sport-types">
-      <div class="sport-type sel" onclick="selST(this)">🧘 Йога</div>
-      <div class="sport-type" onclick="selST(this)">🏃 Бег</div>
-      <div class="sport-type" onclick="selST(this)">🏋️ Зал</div>
-      <div class="sport-type" onclick="selST(this)">🚶 Ходьба</div>
-      <div class="sport-type" onclick="selST(this)">🏊 Плавание</div>
+<!-- APP -->
+<div id="app" style="display:none">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <h1 id="hdr-title">Cycle</h1>
+      <div class="sm" id="hdr-sub">Июнь 2025</div>
     </div>
-    <input class="sport-input" placeholder="Длительность (мин)" type="number">
-    <input class="sport-input" placeholder="Как себя чувствовала? (1-5)" type="number">
-    <button class="sport-btn" onclick="this.textContent='Записано ✓'">Сохранить</button>
+    <div class="sm" id="hdr-day">День 22</div>
   </div>
-  <div class="sport-tip" style="border-color:var(--o)">
-    <h3>🍽️ Питание сегодня</h3>
-    <p>Лютеиновая фаза — тяга к сладкому нормальна. Добавь магний (бананы, тёмный шоколад) и железо (шпинат, красное мясо).</p>
-  </div>
-</div>
 
-<!-- SUB: DOCTOR -->
-<div class="sub" id="s-doctor">
-  <div class="back" onclick="backMore()">← Назад</div>
-  <div class="subt">Врач</div>
-  <div class="doc-tabs">
-    <div class="doc-tab sel" onclick="docTab(0)">Анализы</div>
-    <div class="doc-tab" onclick="docTab(1)">Отчёт</div>
-    <div class="doc-tab" onclick="docTab(2)">Вопросы</div>
-  </div>
-  <div class="doc-panel on" id="dp0">
-    <div class="anal-item"><div><div class="anal-name">Ферритин</div><div class="anal-val">18 нг/мл · 15 мая</div></div><span class="anal-flag low">↓ Низкий</span></div>
-    <div class="anal-item"><div><div class="anal-name">ТТГ</div><div class="anal-val">2.1 мМЕ/л · 15 мая</div></div><span class="anal-flag ok">✓ Норма</span></div>
-    <div class="anal-item"><div><div class="anal-name">Витамин D</div><div class="anal-val">22 нг/мл · 10 мар</div></div><span class="anal-flag low">↓ Низкий</span></div>
-    <div class="anal-item"><div><div class="anal-name">Гемоглобин</div><div class="anal-val">128 г/л · 15 мая</div></div><span class="anal-flag ok">✓ Норма</span></div>
-    <button class="sport-btn" style="background:var(--l);margin-top:12px" onclick="this.textContent='+ Добавлено'">+ Добавить анализ</button>
-  </div>
-  <div class="doc-panel" id="dp1">
-    <div class="plan-card">
-      <h3>📄 Отчёт для врача</h3>
-      <div style="font-size:13px;color:var(--t2);margin-bottom:12px">Период: последние 3 месяца</div>
-      <div style="font-size:13px;margin-bottom:6px">✅ Циклы и даты</div>
-      <div style="font-size:13px;margin-bottom:6px">✅ Симптомы</div>
-      <div style="font-size:13px;margin-bottom:6px">✅ Анализы с референсами</div>
-      <div style="font-size:13px;margin-bottom:6px">✅ Вопросы врачу</div>
-      <button class="doc-pdf" onclick="this.textContent='PDF сгенерирован ✓'">Сгенерировать PDF</button>
-      <div style="font-size:11px;color:var(--t3);text-align:center;margin-top:8px">⚠️ Не является медицинским заключением</div>
+  <!-- ===== TAB: HOME ===== -->
+  <div class="tab active" id="tab-home">
+    <div class="preset-bar">
+      <div class="preset-chip active" onclick="setPreset('min')">🔮 Минимум</div>
+      <div class="preset-chip" onclick="setPreset('plan')">📋 Планер</div>
+      <div class="preset-chip" onclick="setPreset('sport')">🏋️ Спорт</div>
+    </div>
+    <div class="tab-content">
+
+      <!-- SHARED: cycle hero -->
+      <div class="card cycle-hero">
+        <div class="day" id="home-day">22</div>
+        <div class="phase" id="home-phase">Лютеиновая фаза</div>
+      </div>
+
+      <!-- SHARED: next events -->
+      <div class="next-event">
+        <div class="ne-card period">
+          <div class="ne-label">Месячные</div>
+          <div class="ne-date" id="home-period">через 6 дн</div>
+        </div>
+        <div class="ne-card ovul">
+          <div class="ne-label">Овуляция</div>
+          <div class="ne-date" id="home-ovul">через 20 дн</div>
+        </div>
+      </div>
+
+      <!-- SHARED: tip -->
+      <div class="tip-card" id="home-tip">
+        <p><span class="tip-emoji">💊</span> Через 3 дня тебе капец. Запасайся таблетками. Сегодня ещё ок — сделай всё важное до пятницы.</p>
+      </div>
+
+      <!-- PRESET: PLAN -->
+      <div class="home-section" id="hs-plan">
+        <div class="section-title">План на сегодня</div>
+        <div class="card">
+          <div class="plan-item">
+            <div class="plan-check" onclick="togglePlan(this)"></div>
+            <div>
+              <div class="plan-text">Важная встреча в 14:00</div>
+            </div>
+          </div>
+          <div class="plan-item">
+            <div class="plan-check" onclick="togglePlan(this)"></div>
+            <div>
+              <div class="plan-text">Йога 30 мин</div>
+              <div class="plan-explain" style="display:none">В лютеиновую кроссфит — перебор. Йога самое то 💜</div>
+            </div>
+          </div>
+          <div class="plan-item">
+            <div class="plan-check" onclick="togglePlan(this)"></div>
+            <div>
+              <div class="plan-text">Купить магний + ибупрофен</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title">Энергия и самочувствие</div>
+        <div class="card">
+          <div class="slider-row">
+            <label>⚡ Энергия</label>
+            <input type="range" min="1" max="5" value="3">
+            <div class="val">3</div>
+          </div>
+          <div class="slider-row">
+            <label>🩸 Боль</label>
+            <input type="range" min="1" max="5" value="1">
+            <div class="val">1</div>
+          </div>
+        </div>
+
+        <div class="section-title">Эмоции сегодня</div>
+        <div class="card">
+          <div class="mood-panel">
+            <div class="mood-tag" onclick="togMood(this)">😤 Раздражение</div>
+            <div class="mood-tag" onclick="togMood(this)">😴 Усталость</div>
+            <div class="mood-tag" onclick="togMood(this)">😰 Тревога</div>
+            <div class="mood-tag sel" onclick="togMood(this)">😌 Спокойствие</div>
+            <div class="mood-tag" onclick="togMood(this)">😊 Радость</div>
+            <div class="mood-tag" onclick="togMood(this)">🔥 Энергия</div>
+            <div class="mood-tag" onclick="togMood(this)">😢 Грусть</div>
+            <div class="mood-tag" onclick="togMood(this)">🤢 Тошнота</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRESET: SPORT -->
+      <div class="home-section" id="hs-sport">
+        <div class="section-title">Тренировка сегодня</div>
+        <div class="card" style="border-left:3px solid var(--green)">
+          <h3>🧘 Йога / Растяжка</h3>
+          <p class="sm" style="margin-top:4px">Лютеиновая фаза — тело копит силы. Не грузи его, лучше мягкая нагрузка.</p>
+          <div class="sm" style="margin-top:6px;color:var(--l)">⚠️ Избегай: HIIT, тяжёлые приседы, бег на скорость</div>
+        </div>
+
+        <div class="section-title">Калории</div>
+        <div class="card">
+          <div class="kcal-input">
+            <label>🍎 Сегодня:</label>
+            <input type="number" placeholder="1850" id="kcal-home">
+            <span class="sm">ккал</span>
+          </div>
+          <div class="sm" style="margin-top:4px">В лютеиновую +200-300 ккал — это норма. Ешь плотнее, чтобы в ПМС не смести всё что видишь 🍫</div>
+        </div>
+
+        <div class="section-title">Энергия</div>
+        <div class="card">
+          <div class="slider-row">
+            <label>⚡ Энергия</label>
+            <input type="range" min="1" max="5" value="3">
+            <div class="val">3</div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
-  <div class="doc-panel" id="dp2">
-    <div class="plan-card">
-      <h3>❓ Мои вопросы врачу</h3>
-      <div style="font-size:14px;padding:8px 0;border-bottom:1px solid rgba(58,42,42,.04)">• Почему ферритин низкий при нормальном гемоглобине?</div>
-      <div style="font-size:14px;padding:8px 0;border-bottom:1px solid rgba(58,42,42,.04)">• Нужен ли приём железа?</div>
-      <div style="font-size:14px;padding:8px 0">• Сильная боль в дни 1-2 — это норма?</div>
-      <button class="sport-btn" style="background:var(--l);margin-top:12px" onclick="this.textContent='+ Добавлено'">+ Добавить вопрос</button>
+
+  <!-- ===== TAB: CALENDAR ===== -->
+  <div class="tab" id="tab-cal">
+    <div class="tab-content">
+      <div class="cal-header">
+        <button class="cal-nav" onclick="calPrev()">‹</button>
+        <h2 id="cal-month">Июнь 2025</h2>
+        <button class="cal-nav" onclick="calNext()">›</button>
+      </div>
+      <div class="cal-toggle">
+        <label>Фазы цикла</label>
+        <div class="tsw" id="cal-phase-sw" onclick="togCalPhase()"></div>
+      </div>
+      <div class="cal-legend">
+        <span><div class="ld" style="background:var(--m)"></div>Месячные</span>
+        <span><div class="ld" style="background:var(--ob)"></div>Овуляция</span>
+        <span><div class="ld" style="background:var(--o);opacity:.3"></div>Фертильное</span>
+        <span><div class="ld" style="background:var(--green)"></div>Тренировка</span>
+      </div>
+      <div class="card" style="padding:8px">
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TAB: MORE ===== -->
+  <div class="tab" id="tab-more">
+    <div class="sub-nav">
+      <div class="sub-chip active" onclick="setSub('planer')">📋 Планер</div>
+      <div class="sub-chip" onclick="setSub('sport')">🏋️ Спорт</div>
+      <div class="sub-chip" onclick="setSub('doc')">🩺 Врач</div>
+      <div class="sub-chip" onclick="setSub('sos')">🆘 SOS</div>
+      <div class="sub-chip" onclick="setSub('settings')">⚙️ Настройки</div>
+    </div>
+
+    <!-- PLANER -->
+    <div class="sub-screen active" id="ss-planer">
+      <div class="planer-tabs">
+        <div class="planer-tab active" onclick="setPlanTab('a')">План А</div>
+        <div class="planer-tab" onclick="setPlanTab('b')">План Б (лёгкий)</div>
+      </div>
+      <div id="plan-a">
+        <div class="card">
+          <div class="plan-item"><div class="plan-check" onclick="togglePlan(this)"></div><div><div class="plan-text">Утренняя пробежка 5 км</div><div class="plan-explain" style="display:none">В лютеиновую провал энергии — это не лень, а прогестерон. Завтра попробуй 20 мин ходьбы 🚶‍♀️</div></div></div>
+          <div class="plan-item"><div class="plan-check" onclick="togglePlan(this)"></div><div><div class="plan-text">Презентация для клиента</div></div></div>
+          <div class="plan-item"><div class="plan-check" onclick="togglePlan(this)"></div><div><div class="plan-text">Готовка на 3 дня</div><div class="plan-explain" style="display:none">Стоя у плиты 2 часа в лютеиновую — ад. Закажи доставку, не мучай себя 🍕</div></div></div>
+        </div>
+        <div class="section-title">Калории</div>
+        <div class="card">
+          <div class="kcal-input">
+            <label>🍎 Итого:</label>
+            <input type="number" placeholder="1850">
+            <span class="sm">ккал</span>
+          </div>
+        </div>
+      </div>
+      <div id="plan-b" style="display:none">
+        <div class="card" style="background:var(--ll);border:1px solid var(--l)">
+          <p class="sm" style="margin-bottom:8px;color:var(--l)">💜 Тело говорит «не сегодня». Вот мягкий план:</p>
+          <div class="plan-item"><div class="plan-check" onclick="togglePlan(this)"></div><div class="plan-text">Прогулка 20 мин</div></div>
+          <div class="plan-item"><div class="plan-check" onclick="togglePlan(this)"></div><div class="plan-text">Тёплый душ + магний</div></div>
+          <div class="plan-item"><div class="plan-check" onclick="togglePlan(this)"></div><div class="plan-text">Сериал без вины</div></div>
+        </div>
+        <div class="card">
+          <p class="sm">📌 Несделанное из Плана А перенесено на завтра автоматически. Это не провал — это адаптация.</p>
+        </div>
+      </div>
+      <div class="section-title">Утро-чек (завтра)</div>
+      <div class="card">
+        <div class="slider-row"><label>⚡ Энергия</label><input type="range" min="1" max="5" value="3"><div class="val">3</div></div>
+        <div class="slider-row"><label>😴 Сон</label><input type="range" min="1" max="5" value="4"><div class="val">4</div></div>
+        <div class="slider-row"><label>🩸 Боль</label><input type="range" min="1" max="5" value="1"><div class="val">1</div></div>
+      </div>
+      <div class="section-title">Эмоции сегодня</div>
+      <div class="card">
+        <div class="mood-panel">
+          <div class="mood-tag" onclick="togMood(this)">😤 Раздражение</div>
+          <div class="mood-tag" onclick="togMood(this)">😴 Усталость</div>
+          <div class="mood-tag" onclick="togMood(this)">😰 Тревога</div>
+          <div class="mood-tag" onclick="togMood(this)">😌 Спокойствие</div>
+          <div class="mood-tag" onclick="togMood(this)">😊 Радость</div>
+          <div class="mood-tag" onclick="togMood(this)">🔥 Энергия</div>
+          <div class="mood-tag" onclick="togMood(this)">😢 Грусть</div>
+          <div class="mood-tag" onclick="togMood(this)">🤢 Тошнота</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPORT -->
+    <div class="sub-screen" id="ss-sport">
+      <div class="section-title">Сегодня рекомендуется</div>
+      <div class="card" style="border-left:3px solid var(--green)">
+        <h3>🧘 Йога / Растяжка</h3>
+        <p class="sm" style="margin-top:4px">День 22, лютеиновая. Прогестерон растёт — связки мягче, риск травм выше. Мягкая нагрузка = кайф, HIIT = боль.</p>
+      </div>
+      <div class="section-title">Неделя</div>
+      <div class="card">
+        <div class="plan-item"><div class="sm" style="width:30px">Пн</div><div class="plan-text">🏋️ Сила (верх)</div><div class="badge" style="background:var(--fl);color:var(--f)">фоллик.</div></div>
+        <div class="plan-item"><div class="sm" style="width:30px">Вт</div><div class="plan-text">🏃‍♀️ Кардио 30 мин</div><div class="badge" style="background:var(--fl);color:var(--f)">фоллик.</div></div>
+        <div class="plan-item"><div class="sm" style="width:30px">Ср</div><div class="plan-text">🏋️ Сила (низ)</div><div class="badge" style="background:var(--ol);color:var(--o)">овуляция</div></div>
+        <div class="plan-item"><div class="sm" style="width:30px">Чт</div><div class="plan-text">🧘 Йога</div><div class="badge" style="background:var(--ll);color:var(--l)">лютеин.</div></div>
+        <div class="plan-item"><div class="sm" style="width:30px">Пт</div><div class="plan-text" style="color:var(--t3)">Отдых</div><div class="badge" style="background:var(--ll);color:var(--l)">лютеин.</div></div>
+      </div>
+    </div>
+
+    <!-- DOC -->
+    <div class="sub-screen" id="ss-doc">
+      <div class="section-title">Анализы</div>
+      <div class="card">
+        <div class="plan-item"><div class="plan-text">Ферритин</div><div class="sm">18 мкг/л ↓</div></div>
+        <div class="plan-item"><div class="plan-text">Витамин D</div><div class="sm">22 нг/мл ↓</div></div>
+        <div class="plan-item"><div class="plan-text">ТТГ</div><div class="sm">2.1 мМЕ/л ✓</div></div>
+        <div style="text-align:center;padding:8px"><span class="sm" style="color:var(--acc);cursor:pointer">+ Добавить результат</span></div>
+      </div>
+      <div class="section-title">Отчёт врачу</div>
+      <div class="card" style="text-align:center">
+        <p class="sm">PDF с циклом, симптомами и анализами за 3 месяца</p>
+        <button class="ob-btn" style="margin-top:10px;padding:10px;font-size:13px">Сформировать PDF</button>
+      </div>
+    </div>
+
+    <!-- SOS -->
+    <div class="sub-screen" id="ss-sos">
+      <div class="sos-card" style="background:var(--ml)">
+        <h3>🩸 Месячные начались внезапно</h3>
+        <p>Отметь начало — пересчитаем прогноз. Не паникуй, ±2 дня норма.</p>
+      </div>
+      <div class="sos-card" style="background:var(--ll)">
+        <h3>😭 ПМС накрывает</h3>
+        <p>Магний B6, тёплая грелка на живот, ибупрофен 400мг. Ты не слабая, у тебя прогестерон скачет.</p>
+      </div>
+      <div class="sos-card" style="background:var(--fl)">
+        <h3>⚡ Нет сил вообще</h3>
+        <p>Переключи на План Б. Серьёзно. Несделанное перенесётся, а выгорание — нет.</p>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="sub-screen" id="ss-settings">
+      <div class="section-title">Режим главной</div>
+      <div class="card">
+        <div class="setting-row">
+          <div><div class="setting-label">🔮 Минимум</div><div class="setting-desc">Только прогноз</div></div>
+          <div class="tsw" onclick="togSw(this);setPreset('min')"></div>
+        </div>
+        <div class="setting-row">
+          <div><div class="setting-label">📋 Планер</div><div class="setting-desc">План + энергия + эмоции</div></div>
+          <div class="tsw on" onclick="togSw(this);setPreset('plan')"></div>
+        </div>
+        <div class="setting-row">
+          <div><div class="setting-label">🏋️ Спорт</div><div class="setting-desc">Тренировки + калории</div></div>
+          <div class="tsw" onclick="togSw(this);setPreset('sport')"></div>
+        </div>
+      </div>
+      <div class="section-title">Уведомления</div>
+      <div class="card">
+        <div class="setting-row">
+          <div><div class="setting-label">Месячные через 2 дня</div></div>
+          <div class="tsw on" onclick="togSw(this)"></div>
+        </div>
+        <div class="setting-row">
+          <div><div class="setting-label">Утренний план</div></div>
+          <div class="tsw" onclick="togSw(this)"></div>
+        </div>
+        <div class="setting-row">
+          <div><div class="setting-label">Мотивационные пуши</div><div class="setting-desc">Мы не делаем такие.Seriously.</div></div>
+          <div class="tsw" onclick="togSw(this)" style="opacity:.4;pointer-events:none"></div>
+        </div>
+      </div>
+      <div class="section-title">Данные</div>
+      <div class="card">
+        <div class="setting-row"><div class="setting-label">Длина цикла</div><div class="sm">28 дней</div></div>
+        <div class="setting-row"><div class="setting-label">Экспорт данных</div><div class="sm" style="color:var(--acc)">CSV / JSON</div></div>
+        <div class="setting-row"><div class="setting-label">Хранение</div><div class="sm">🔒 Только на устройстве</div></div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- SUB: SOS -->
-<div class="sub" id="s-sos">
-  <div class="back" onclick="backMore()">← Назад</div>
-  <div class="subt">🔴 Мне сейчас плохо</div>
-  <div class="sos-card">
-    <h3>Что помогает прямо сейчас</h3>
-    <p>💊 <b>Обезболивающее:</b> Ибупрофен 400 мг или Но-шпа 2 таблетки</p>
-    <p>🧘 <b>Поза:</b> Лечь на бок, колени к груди. Грелка на низ живота.</p>
-    <p>🍵 <b>Напиток:</b> Тёплый чай с мятой или имбирём.</p>
-    <div class="sos-warn">🚨 <b>Вызывай скорую, если:</b><br>• Кровотечение > 2 прокладок в час<br>• Температура > 38.5<br>• Потеря сознания или сильное головокружение<br>• Боль не снимается обезболивающим</div>
-  </div>
-  <div style="font-size:11px;color:var(--t3);text-align:center">⚠️ Это не медицинская консультация</div>
+<!-- FAB -->
+<button class="fab" id="fab" onclick="togFab()">+</button>
+<div class="fab-menu" id="fab-menu">
+  <button onclick="openModal('plan')"><span class="ico">📋</span> План на завтра</button>
+  <button onclick="openModal('train')"><span class="ico">🏋️</span> Тренировка</button>
+  <button onclick="openModal('mood')"><span class="ico">😊</span> Настроение</button>
+  <button onclick="openModal('kcal')"><span class="ico">🍎</span> Калории</button>
+  <button onclick="openModal('period')"><span class="ico">🩸</span> Месячные</button>
 </div>
 
-<!-- SUB: SETTINGS -->
-<div class="sub" id="s-settings">
-  <div class="back" onclick="backMore()">← Назад</div>
-  <div class="subt">Настройки</div>
-  <div class="set-card">
-    <div class="set-item"><div><div class="set-label">📋 Планер</div><div class="set-desc">План дня + План Б</div></div><div class="mini-toggle on" onclick="this.classList.toggle('on')"></div></div>
-    <div class="set-item"><div><div class="set-label">🏃‍♀️ Спорт-режим</div><div class="set-desc">Тренировки + питание</div></div><div class="mini-toggle" onclick="this.classList.toggle('on')"></div></div>
-    <div class="set-item"><div><div class="set-label">🩺 Анализы</div><div class="set-desc">Таймлайн + отчёт врачу</div></div><div class="mini-toggle on" onclick="this.classList.toggle('on')"></div></div>
-    <div class="set-item"><div><div class="set-label">📝 Дневник симптомов</div><div class="set-desc">Боль, акне, сон</div></div><div class="mini-toggle" onclick="this.classList.toggle('on')"></div></div>
-    <div class="set-item"><div><div class="set-label">🌡️ Температура</div><div class="set-desc">Базальная температура</div></div><div class="mini-toggle" onclick="this.classList.toggle('on')"></div></div>
-  </div>
-  <div class="set-card">
-    <div class="set-item"><div><div class="set-label">🔒 Данные на устройстве</div><div class="set-desc">Локально, без облака</div></div><div style="font-size:12px;color:var(--f);font-weight:600">✓ Вкл</div></div>
-    <div class="set-item"><div><div class="set-label">🔔 Уведомления</div><div class="set-desc">Выключены по умолчанию</div></div><div class="mini-toggle" onclick="this.classList.toggle('on')"></div></div>
-    <div class="set-item"><div><div class="set-label">📤 Экспорт данных</div><div class="set-desc">CSV / PDF / JSON</div></div><span class="mia">›</span></div>
-    <div class="set-item"><div><div class="set-label">🗑️ Удалить все данные</div><div class="set-desc">Мгновенно, без вопросов</div></div><span class="mia" style="color:var(--m)">›</span></div>
-  </div>
+<!-- BOTTOM NAV -->
+<div class="bnav">
+  <button class="active" onclick="setTab('home')"><span class="ico">🏠</span>Главная</button>
+  <button onclick="setTab('cal')"><span class="ico">📅</span>Календарь</button>
+  <button onclick="setTab('more')"><span class="ico">⚙️</span>Ещё</button>
 </div>
 
-<div class="mo" id="mo" onclick="closeMo(event)">
-  <div class="ms2" onclick="event.stopPropagation()">
-    <div class="mh"></div>
-    <div class="mo-t">Как ты сегодня?</div>
-    <div class="mo-opts">
-      <div class="mo-o" onclick="selMo(this)"><div class="ico">😊</div><div class="lbl">Супер</div></div>
-      <div class="mo-o" onclick="selMo(this)"><div class="ico">😐</div><div class="lbl">Норм</div></div>
-      <div class="mo-o" onclick="selMo(this)"><div class="ico">😩</div><div class="lbl">Не ок</div></div>
-    </div>
-    <button class="mo-btn" onclick="this.textContent='Готово ✓';setTimeout(()=>document.getElementById('mo').classList.remove('on'),700)">Сохранить</button>
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-ov" onclick="closeModal(event)">
+  <div class="modal" id="modal-box">
+    <button class="modal-close" onclick="document.getElementById('modal-ov').classList.remove('open')">✕</button>
+    <h2 id="modal-title">Быстрый ввод</h2>
+    <div id="modal-body"></div>
   </div>
-</div>
-
-<div class="nav">
-  <button class="ni ac" onclick="go('home',this)"><span class="ic">🏠</span><span class="lb">Главная</span></button>
-  <button class="ni" onclick="go('cal',this)"><span class="ic">📅</span><span class="lb">Календарь</span></button>
-  <button class="ni" onclick="go('more',this)"><span class="ic">⚙️</span><span class="lb">Ещё</span></button>
-</div>
 </div>
 
 <script>
-const lb={home:'v5 · Главная',cal:'v5 · Календарь',more:'v5 · Ещё',planner:'v5 · Планер',sport:'v5 · Спорт',doctor:'v5 · Врач',sos:'v5 · SOS',settings:'v5 · Настройки'};
+// ONBOARDING
+let obStep=1, chosenPreset='plan';
+function obNext(n){
+  document.getElementById('os'+obStep).classList.remove('active');
+  document.getElementById('od'+obStep).classList.remove('active');
+  obStep=n;
+  document.getElementById('os'+n).classList.add('active');
+  document.getElementById('od'+n).classList.add('active');
+}
+function selPreset(el,p){
+  document.querySelectorAll('.ob-preset').forEach(e=>e.classList.remove('sel'));
+  el.classList.add('sel');
+  chosenPreset=p;
+}
+function finishOnboard(){
+  document.getElementById('onboard').classList.add('hidden');
+  document.getElementById('app').style.display='block';
+  setPreset(chosenPreset);
+  buildCal();
+}
 
-function go(id,btn){
-  document.querySelectorAll('.scr,.sub').forEach(s=>s.classList.remove('on'));
-  document.getElementById('s-'+id).classList.add('on');
-  if(btn){document.querySelectorAll('.ni').forEach(n=>n.classList.remove('ac'));btn.classList.add('ac')}
-  document.getElementById('sl').textContent=lb[id];
-}
-function goSub(id){
-  document.querySelectorAll('.scr,.sub').forEach(s=>s.classList.remove('on'));
-  document.getElementById('s-'+id).classList.add('on');
-  document.getElementById('sl').textContent=lb[id];
-}
-function backMore(){
-  document.querySelectorAll('.scr,.sub').forEach(s=>s.classList.remove('on'));
-  document.getElementById('s-more').classList.add('on');
-  document.getElementById('sl').textContent=lb.more;
+// TABS
+function setTab(t){
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
+  document.getElementById('tab-'+t).classList.add('active');
+  document.querySelectorAll('.bnav button').forEach(e=>e.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  if(t==='cal') buildCal();
 }
 
-let phOn=false;
-function togPh(){
-  phOn=!phOn;
-  document.getElementById('phT').classList.toggle('on',phOn);
-  document.getElementById('phL').classList.toggle('v',phOn);
-  document.querySelectorAll('.d[data-ph]').forEach(d=>{
-    d.classList.remove('pf','pl');
-    if(phOn&&!d.classList.contains('fe')&&!d.classList.contains('ov')){
-      if(d.dataset.ph==='f')d.classList.add('pf');
-      if(d.dataset.ph==='l')d.classList.add('pl');
-    }
+// PRESETS
+function setPreset(p){
+  document.querySelectorAll('.preset-chip').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.preset-chip').forEach(e=>{
+    if((p==='min'&&e.textContent.includes('Мин'))||(p==='plan'&&e.textContent.includes('План'))||(p==='sport'&&e.textContent.includes('Спорт')))
+      e.classList.add('active');
   });
+  document.querySelectorAll('.home-section').forEach(e=>e.classList.remove('active'));
+  if(p==='plan') document.getElementById('hs-plan').classList.add('active');
+  if(p==='sport') document.getElementById('hs-sport').classList.add('active');
 }
-function slideE(e){
-  const r=e.currentTarget.getBoundingClientRect();
-  const pct=Math.round(((e.clientX-r.left)/r.width)*5);
-  const v=Math.max(1,Math.min(5,pct));
-  document.getElementById('eFill').style.width=(v*20)+'%';
-  document.getElementById('eVal').textContent=v;
+
+// SUB SCREENS
+function setSub(s){
+  document.querySelectorAll('.sub-screen').forEach(e=>e.classList.remove('active'));
+  document.getElementById('ss-'+s).classList.add('active');
+  document.querySelectorAll('.sub-chip').forEach(e=>e.classList.remove('active'));
+  event.currentTarget.classList.add('active');
 }
-function slideP(e){
-  const r=e.currentTarget.getBoundingClientRect();
-  const pct=Math.round(((e.clientX-r.left)/r.width)*5);
-  const v=Math.max(0,Math.min(5,pct));
-  document.getElementById('pFill').style.width=(v*20)+'%';
-  document.getElementById('pVal').textContent=v;
+
+// PLAN TABS
+function setPlanTab(t){
+  document.querySelectorAll('.planer-tab').forEach(e=>e.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.getElementById('plan-a').style.display=t==='a'?'block':'none';
+  document.getElementById('plan-b').style.display=t==='b'?'block':'none';
 }
-function selMood(el){document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('sel'));el.classList.add('sel')}
-const planState={1:false,2:false,3:false};
-function togPlan(n){
-  planState[n]=!planState[n];
-  document.getElementById('pa'+n).classList.toggle('h',planState[n]);
-  document.getElementById('pb'+n).classList.toggle('v',planState[n]);
+
+// TOGGLES
+function togSw(el){el.classList.toggle('on')}
+function togMood(el){el.classList.toggle('sel')}
+function togCalPhase(){document.getElementById('cal-phase-sw').classList.toggle('on');buildCal()}
+
+function togglePlan(el){
+  el.classList.toggle('done');
+  const txt=el.nextElementSibling.querySelector('.plan-text');
+  const exp=el.nextElementSibling.querySelector('.plan-explain');
+  if(el.classList.contains('done')){
+    txt.classList.add('done-text');
+    if(exp) exp.style.display='none';
+  } else {
+    txt.classList.remove('done-text');
+  }
+  // Show explanation when UNchecking (not done = didn't do it)
+  if(!el.classList.contains('done') && exp){
+    // If user unchecks a previously done item, show explanation
+  }
+  // Actually: show explanation when task is NOT done after being done
+  // Let's simplify: show explanation on uncheck
+  if(!el.classList.contains('done') && exp){
+    exp.style.display='block';
+  } else if(exp){
+    exp.style.display='none';
+  }
 }
-function selST(el){document.querySelectorAll('.sport-type').forEach(t=>t.classList.remove('sel'));el.classList.add('sel')}
-function docTab(n){
-  document.querySelectorAll('.doc-tab').forEach((t,i)=>t.classList.toggle('sel',i===n));
-  document.querySelectorAll('.doc-panel').forEach((p,i)=>p.classList.toggle('on',i===n));
+
+// FAB
+function togFab(){
+  document.getElementById('fab').classList.toggle('open');
+  document.getElementById('fab-menu').classList.toggle('open');
 }
-function openMo(){document.getElementById('mo').classList.add('on')}
-function closeMo(e){if(e.target===e.currentTarget)document.getElementById('mo').classList.remove('on')}
-function selMo(el){document.querySelectorAll('.mo-o').forEach(o=>o.classList.remove('sel'));el.classList.add('sel')}
+
+// MODALS
+function openModal(type){
+  togFab();
+  const ov=document.getElementById('modal-ov');
+  const title=document.getElementById('modal-title');
+  const body=document.getElementById('modal-body');
+  ov.classList.add('open');
+  const templates={
+    plan:`<p class="sm" style="margin-bottom:10px">Что запланировать на завтра?</p>
+      <input placeholder="Например: встреча в 10:00">
+      <input placeholder="Ещё задача...">
+      <button class="btn" onclick="document.getElementById('modal-ov').classList.remove('open')">Сохранить</button>`,
+    train:`<p class="sm" style="margin-bottom:10px">Какая тренировка была?</p>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">
+        <div class="mood-tag" onclick="togMood(this)">🏋️ Сила</div>
+        <div class="mood-tag" onclick="togMood(this)">🏃‍♀️ Кардио</div>
+        <div class="mood-tag" onclick="togMood(this)">🧘 Йога</div>
+        <div class="mood-tag" onclick="togMood(this)">🚶‍♀️ Прогулка</div>
+        <div class="mood-tag" onclick="togMood(this)">🏊 Плавание</div>
+        <div class="mood-tag" onclick="togMood(this)">😴 Отдых</div>
+      </div>
+      <input placeholder="Длительность (мин)">
+      <button class="btn" onclick="document.getElementById('modal-ov').classList.remove('open')">Сохранить</button>`,
+    mood:`<p class="sm" style="margin-bottom:10px">Как ты сейчас? (можно несколько)</p>
+      <div class="mood-panel">
+        <div class="mood-tag" onclick="togMood(this)">😤 Раздражение</div>
+        <div class="mood-tag" onclick="togMood(this)">😴 Усталость</div>
+        <div class="mood-tag" onclick="togMood(this)">😰 Тревога</div>
+        <div class="mood-tag" onclick="togMood(this)">😌 Спокойствие</div>
+        <div class="mood-tag" onclick="togMood(this)">😊 Радость</div>
+        <div class="mood-tag" onclick="togMood(this)">🔥 Энергия</div>
+        <div class="mood-tag" onclick="togMood(this)">😢 Грусть</div>
+        <div class="mood-tag" onclick="togMood(this)">🤢 Тошнота</div>
+      </div>
+      <button class="btn" style="margin-top:16px" onclick="document.getElementById('modal-ov').classList.remove('open')">Сохранить</button>`,
+    kcal:`<p class="sm" style="margin-bottom:10px">Сколько ккал сегодня?</p>
+      <input type="number" placeholder="1850" style="font-size:24px;text-align:center">
+      <p class="sm" style="margin-top:4px">Можешь взять цифру из FatSecret — мы не дублируем, просто собираем в одном месте 📊</p>
+      <button class="btn" onclick="document.getElementById('modal-ov').classList.remove('open')">Сохранить</button>`,
+    period:`<p class="sm" style="margin-bottom:10px">Месячные начались?</p>
+      <input type="date">
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <div class="mood-tag" onclick="togMood(this)">💧 Мажет</div>
+        <div class="mood-tag" onclick="togMood(this)">🩸 Средне</div>
+        <div class="mood-tag" onclick="togMood(this)">🌊 Обильно</div>
+      </div>
+      <button class="btn" onclick="document.getElementById('modal-ov').classList.remove('open')">Сохранить</button>`
+  };
+  const titles={plan:'План на завтра',train:'Тренировка',mood:'Настроение',kcal:'Калории',period:'Месячные'};
+  title.textContent=titles[type]||'Ввод';
+  body.innerHTML=templates[type]||'';
+}
+function closeModal(e){if(e.target===e.currentTarget)e.currentTarget.classList.remove('open')}
+
+// CALENDAR
+let calYear=2025, calMonth=5; // June (0-indexed)
+const periodDays=[1,2,3,4,5,29,30]; // mock
+const ovulDay=14;
+const fertileDays=[11,12,13,14,15,16];
+const trainDays=[3,5,8,10,12,15,17,19,22];
+const months=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+
+function buildCal(){
+  const g=document.getElementById('cal-grid');
+  const showPhase=document.getElementById('cal-phase-sw').classList.contains('on');
+  document.getElementById('cal-month').textContent=months[calMonth]+' '+calYear;
+  let html='';
+  ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].forEach(d=>html+=`<div class="cal-dow">${d}</div>`);
+  const first=new Date(calYear,calMonth,1);
+  let startDay=(first.getDay()+6)%7;
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  for(let i=0;i<startDay;i++) html+='<div class="cal-day"></div>';
+  for(let d=1;d<=daysInMonth;d++){
+    let cls='cal-day';
+    if(d===22 && calMonth===5) cls+=' today';
+    if(periodDays.includes(d)) cls+=' period';
+    if(d===ovulDay) cls+=' ovul-day';
+    else if(fertileDays.includes(d)) cls+=' fertile';
+    if(showPhase && !periodDays.includes(d) && d!==ovulDay && !fertileDays.includes(d)){
+      if(d>=6 && d<=13) cls+=' phase-f';
+      if(d>=17 && d<=28) cls+=' phase-l';
+    }
+    let dots='';
+    if(periodDays.includes(d)) dots+='<div class="cal-dot dot-period"></div>';
+    if(d===ovulDay) dots+='<div class="cal-dot dot-ovul"></div>';
+    if(trainDays.includes(d)) dots+='<div class="cal-dot dot-train"></div>';
+    html+=`<div class="${cls}" onclick="calDayTap(${d})">${d}${dots?'<div class="cal-dots">'+dots+'</div>':''}</div>`;
+  }
+  g.innerHTML=html;
+}
+function calPrev(){calMonth--;if(calMonth<0){calMonth=11;calYear--}buildCal()}
+function calNext(){calMonth++;if(calMonth>11){calMonth=0;calYear++}buildCal()}
+function calDayTap(d){openModal('train')}
+
+// SLIDERS
+document.addEventListener('input',e=>{
+  if(e.target.type==='range'){
+    const v=e.target.nextElementSibling;
+    if(v&&v.classList.contains('val')) v.textContent=e.target.value;
+  }
+});
+
+// INIT
+document.getElementById('ob-date').valueAsDate=new Date(Date.now()-21*86400000);
 </script>
 </body>
 </html>
